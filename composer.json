@@ -1,0 +1,12 @@
+{
+    "name": "traskin/blog",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "Blog\\": "src/"
+        }
+    },
+    "require": {
+        "php": ">=8.1"
+    }
+}
