@@ -4,3 +4,7 @@
    * Install dependencies
 2. `docker-compose up -d --build`
    * Start the containers
+
+## Code quality
+
+[![SymfonyInsight](https://insight.symfony.com/projects/a4b9c445-a35c-4a8f-b74f-e2bd66ca711f/big.svg)](https://insight.symfony.com/projects/a4b9c445-a35c-4a8f-b74f-e2bd66ca711f)
