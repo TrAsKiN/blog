@@ -32,13 +32,17 @@ class Router
 
     /**
      * @param ServerRequestInterface $request
-     * @return Route|null
+     * @return array|null
      */
-    public function match(ServerRequestInterface $request): ?Route
+    public function match(ServerRequestInterface $request): ?array
     {
         foreach ($this->routes as $route) {
-            if ($request->getUri()->getPath() == $route->path) {
-                return $route;
+            if (preg_match(sprintf("#^%s$#", $route->pattern), $request->getUri()->getPath(), $matches)) {
+                array_shift($matches);
+                return [
+                    'route' => $route,
+                    'params' => $matches,
+                ];
             }
         }
         return null;

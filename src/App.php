@@ -17,12 +17,14 @@ class App
 
     public function run(ServerRequestInterface $request): ResponseInterface
     {
-        $route = $this->container->get(Router::class)->match($request);
-        if ($route) {
-            return new HtmlResponse($this->container->call([
-                $route->controller,
-                $route->action
-            ]));
+        $router = $this->container->get(Router::class);
+        $matches = $router->match($request);
+        if (!empty($matches)) {
+            $response = $this->container->call([
+                $matches['route']->controller,
+                $matches['route']->action
+            ], $matches['params']);
+            return new HtmlResponse($response);
         } else {
             return new EmptyResponse(404);
         }
