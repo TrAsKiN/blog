@@ -3,6 +3,16 @@
 {% block title %}Bienvenue sur mon Blog{% endblock %}
 
 {% block body %}
-<h1 class="display-1">Blog</h1>
-<p class="lead">Bienvenue sur mon Blog</p>
+
+    {% include 'home/_featured.html.twig' %}
+    <div class="row g-5">
+        <div class="col-md-8">
+            {% for i in 1..2 %}
+                {% include 'home/_post.html.twig' %}
+            {% endfor %}
+            {% include 'home/_pagination.html.twig' %}
+        </div>
+        {% include 'home/_about.html.twig' %}
+    </div>
+
 {% endblock %}

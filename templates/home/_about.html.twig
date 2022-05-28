@@ -1,0 +1,17 @@
+<div class="col-md-4">
+    <div class="position-sticky">
+        <div class="p-4 mb-3 bg-secondary bg-opacity-10 rounded">
+            <h4 class="fst-italic">À propos</h4>
+            <p class="mb-0">Vous trouverez ici des articles sur des sujets aussi divers que variés.</p>
+        </div>
+
+        <div class="p-4">
+            <h4 class="fst-italic">Archives</h4>
+            <ol class="list-unstyled mb-0">
+                {% for i in 0..0 %}
+                    <li><a href="#" class="link-secondary">{{ "now"|date_modify("-"~ i ~" month")|format_datetime(pattern="MMMM yyyy", locale="fr")|capitalize }}</a></li>
+                {% endfor %}
+            </ol>
+        </div>
+    </div>
+</div>
