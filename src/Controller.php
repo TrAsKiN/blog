@@ -2,9 +2,9 @@
 
 namespace Blog;
 
-use DI\Container;
-use DI\DependencyException;
-use DI\NotFoundException;
+use Laminas\Diactoros\Response\HtmlResponse;
+use Laminas\Diactoros\Response\RedirectResponse;
+use Psr\Http\Message\ResponseInterface;
 use Twig\Environment;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
@@ -16,7 +16,6 @@ class Controller
 {
     public function __construct(
         private readonly Environment $twig,
-        private readonly Container $container,
         private readonly Router $router
     ) {
         $this->twig->addExtension(new IntlExtension());
@@ -24,21 +23,17 @@ class Controller
     }
 
     /**
-     * @throws DependencyException
-     * @throws NotFoundException
-     */
-    protected function get(string $name): mixed
-    {
-        return $this->container->get($name);
-    }
-
-    /**
      * @throws RuntimeError
      * @throws SyntaxError
      * @throws LoaderError
      */
-    protected function render(string $name, array $context = []): string
+    protected function render(string $name, array $context = []): ResponseInterface
     {
-        return $this->twig->render($name, $context);
+        return new HtmlResponse($this->twig->render($name, $context));
+    }
+
+    protected function redirect(string $name, array $parameters = []): ResponseInterface
+    {
+        return new RedirectResponse($this->router->generateUri($name, $parameters));
     }
 }

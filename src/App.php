@@ -3,28 +3,36 @@
 namespace Blog;
 
 use DI\Container;
+use Exception;
 use Laminas\Diactoros\Response\EmptyResponse;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
-use Laminas\Diactoros\Response\HtmlResponse;
 
 class App
 {
     public function __construct(
-        public Container $container
+        private readonly Container $container,
+        private readonly Router $router
     ) {
     }
 
+    /**
+     * @param ServerRequestInterface $request
+     * @return ResponseInterface
+     * @throws Exception
+     */
     public function run(ServerRequestInterface $request): ResponseInterface
     {
-        $router = $this->container->get(Router::class);
-        $matches = $router->match($request);
+        $matches = $this->router->match($request);
         if (!empty($matches)) {
             $response = $this->container->call([
                 $matches['route']->controller,
                 $matches['route']->action
             ], $matches['params']);
-            return new HtmlResponse($response);
+            if (!$response instanceof ResponseInterface) {
+                throw new Exception("The Controller has not returned a response implementing ResponseInterface!");
+            }
+            return $response;
         } else {
             return new EmptyResponse(404);
         }

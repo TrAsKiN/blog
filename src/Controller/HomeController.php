@@ -4,6 +4,7 @@ namespace Blog\Controller;
 
 use Blog\Controller;
 use Blog\Route;
+use Psr\Http\Message\ResponseInterface;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
@@ -16,7 +17,7 @@ class HomeController extends Controller
      * @throws LoaderError
      */
     #[Route('/', name: 'home')]
-    public function home(): string
+    public function home(): ResponseInterface
     {
         return $this->render('home/home.html.twig');
     }
