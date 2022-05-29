@@ -5,6 +5,7 @@ namespace Blog;
 use Composer\Autoload\ClassMapGenerator;
 use Psr\Http\Message\ServerRequestInterface;
 use ReflectionClass;
+use ReflectionException;
 
 class Router
 {
@@ -13,6 +14,9 @@ class Router
      */
     private array $routes = [];
 
+    /**
+     * @throws ReflectionException
+     */
     public function __construct()
     {
         $controllers = ClassMapGenerator::createMap(__DIR__ . '/Controller');
@@ -41,9 +45,27 @@ class Router
                 array_shift($matches);
                 return [
                     'route' => $route,
-                    'params' => $matches,
+                    'params' => array_combine($route->parameters, $matches),
                 ];
             }
+        }
+        return null;
+    }
+
+    /**
+     * @param string $name
+     * @param array $parameters
+     * @return string|null
+     */
+    public function generateUri(string $name, array $parameters = []): ?string
+    {
+        $route = $this->getRoute($name);
+        if ($route) {
+            $uri = $route->path;
+            foreach ($route->parameters as $parameter) {
+                $uri = preg_replace(sprintf('#\{%s}#', $parameter), $parameters[$parameter], $uri);
+            }
+            return $uri;
         }
         return null;
     }
@@ -54,11 +76,25 @@ class Router
      * @param $action
      * @return self
      */
-    public function addRoute(Route $route, $controller, $action): self
+    private function addRoute(Route $route, $controller, $action): self
     {
         $route->controller = $controller;
         $route->action = $action;
         $this->routes[$route->name] = $route;
         return $this;
+    }
+
+    /**
+     * @param string $name
+     * @return Route|null
+     */
+    private function getRoute(string $name): ?Route
+    {
+        foreach ($this->routes as $route) {
+            if ($route->name === $name) {
+                return $route;
+            }
+        }
+        return null;
     }
 }
