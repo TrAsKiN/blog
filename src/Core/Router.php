@@ -1,6 +1,6 @@
 <?php
 
-namespace Blog;
+namespace Blog\Core;
 
 use Composer\Autoload\ClassMapGenerator;
 use Psr\Http\Message\ServerRequestInterface;
@@ -19,7 +19,7 @@ class Router
      */
     public function __construct()
     {
-        $controllers = ClassMapGenerator::createMap(__DIR__ . '/Controller');
+        $controllers = ClassMapGenerator::createMap(__DIR__ . '/../Controller');
         foreach ($controllers as $class => $file) {
             $reflection = new ReflectionClass($class);
             foreach ($reflection->getMethods() as $method) {
@@ -74,14 +74,12 @@ class Router
      * @param Route $route
      * @param $controller
      * @param $action
-     * @return self
      */
-    private function addRoute(Route $route, $controller, $action): self
+    private function addRoute(Route $route, $controller, $action): void
     {
         $route->controller = $controller;
         $route->action = $action;
         $this->routes[$route->name] = $route;
-        return $this;
     }
 
     /**

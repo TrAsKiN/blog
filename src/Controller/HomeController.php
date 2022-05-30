@@ -2,8 +2,8 @@
 
 namespace Blog\Controller;
 
-use Blog\Controller;
-use Blog\Route;
+use Blog\Core\Controller;
+use Blog\Core\Route;
 use Psr\Http\Message\ResponseInterface;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;

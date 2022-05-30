@@ -4,6 +4,7 @@
    * Install dependencies
 2. `docker-compose up -d --build`
    * Start the containers
+   * Access the blog at: http://localhost
 
 ## Code quality
 

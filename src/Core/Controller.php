@@ -1,6 +1,6 @@
 <?php
 
-namespace Blog;
+namespace Blog\Core;
 
 use Laminas\Diactoros\Response\HtmlResponse;
 use Laminas\Diactoros\Response\RedirectResponse;
@@ -12,7 +12,7 @@ use Twig\Error\SyntaxError;
 use Twig\Extra\Intl\IntlExtension;
 use Twig\TwigFunction;
 
-class Controller
+abstract class Controller
 {
     public function __construct(
         private readonly Environment $twig,

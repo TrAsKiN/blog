@@ -1,12 +1,12 @@
 <?php
 
-namespace Blog;
+namespace Blog\Core;
 
 use DI\Container;
 use Exception;
 use Laminas\Diactoros\Response\EmptyResponse;
-use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
 class App
 {
