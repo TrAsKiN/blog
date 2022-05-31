@@ -6,15 +6,12 @@ use DateTime;
 
 class Post
 {
-    public function __construct(
-        private readonly int $id,
-        private string $title,
-        private string $lede,
-        private string $content,
-        private DateTime $createdAt = new DateTime(),
-        private DateTime $updatedAt = new DateTime()
-    ) {
-    }
+    public int $id;
+    public string $title;
+    public string $lede;
+    public string $content;
+    public ?DateTime $createdAt;
+    public ?DateTime $updatedAt;
 
     public function getId(): int
     {

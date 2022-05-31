@@ -22,5 +22,5 @@ try {
     $response = $app->run(ServerRequestFactory::fromGlobals());
     (new SapiEmitter())->emit($response);
 } catch (Exception $exception) {
-    (new SapiEmitter())->emit(new HtmlResponse($exception->getTraceAsString(), 500));
+    (new SapiEmitter())->emit(new HtmlResponse($exception->getMessage(), 500));
 }

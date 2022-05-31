@@ -6,13 +6,10 @@ use DateTime;
 
 class Comment
 {
-    public function __construct(
-        private readonly int $id,
-        private string       $content,
-        private DateTime     $createdAt = new DateTime(),
-        private bool         $valid = false
-    ) {
-    }
+    public int $id;
+    public string $content;
+    public ?DateTime $createdAt;
+    public bool $valid = false;
 
     public function getId(): int
     {

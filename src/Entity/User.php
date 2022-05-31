@@ -4,15 +4,17 @@ namespace Blog\Entity;
 
 class User
 {
-    public function __construct(
-        private readonly int $id,
-        private string $username,
-        private string $email,
-        private string $password,
-        private array $roles = [],
-        private bool $active = false,
-        private ?string $token = null
-    ) {
+    public int $id;
+    public string $username;
+    public string $password;
+    public string $email;
+    public mixed $roles = [];
+    public bool $active = false;
+    public ?string $token = null;
+
+    public function __construct()
+    {
+        $this->roles = json_decode($this->roles);
     }
 
     public function getId(): int
