@@ -1,0 +1,8 @@
+<?php
+
+return [
+    'db.host' => 'database',
+    'db.name' => 'blog',
+    'db.username' => 'root',
+    'db.password' => null,
+];
