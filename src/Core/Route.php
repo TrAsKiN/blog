@@ -21,6 +21,6 @@ class Route
         foreach ($matches as $match) {
             $this->parameters[] = substr($match[0], 1, -1);
         }
-        $this->pattern = preg_replace($pattern, '(\d+)', $this->path);
+        $this->pattern = preg_replace($pattern, '([0-9a-z-]+)', $this->path);
     }
 }
