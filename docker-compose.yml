@@ -19,6 +19,7 @@ services:
       MYSQL_DATABASE: blog
     volumes:
       - data:/var/lib/mysql
+      - ./blog.sql:/docker-entrypoint-initdb.d/blog.sql
 
 volumes:
   data:
