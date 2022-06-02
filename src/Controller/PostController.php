@@ -10,19 +10,19 @@ use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
 
-class HomeController extends Controller
+class PostController extends Controller
 {
     /**
      * @throws RuntimeError
      * @throws SyntaxError
      * @throws LoaderError
      */
-    #[Route('/', name: 'home')]
-    public function home(PostRepository $postRepository): ResponseInterface
+    #[Route('/blog/post/{slug}', name: 'post')]
+    public function index(string $slug, PostRepository $postRepository): ResponseInterface
     {
-        $posts = $postRepository->getPaginatedList(1, 3);
-        return $this->render('home/home.html.twig', [
-            'posts' => $posts,
+        $post = $postRepository->findWithSlug($slug);
+        return $this->render('post/show.html.twig', [
+            'post' => $post,
         ]);
     }
 }

@@ -7,10 +7,10 @@
     {% include 'home/_featured.html.twig' %}
     <div class="row g-5">
         <div class="col-md-8">
-            {% for i in 1..2 %}
-                {% include 'home/_post.html.twig' %}
+            <h2 class="blog-caption h4 mb-3">Articles récents</h2>
+            {% for post in posts %}
+                {% include 'home/_post.html.twig' with {'post': post} %}
             {% endfor %}
-            {% include 'home/_pagination.html.twig' %}
         </div>
         {% include 'home/_about.html.twig' %}
     </div>

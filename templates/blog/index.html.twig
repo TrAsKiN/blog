@@ -1,0 +1,23 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Blog &middot; {{ parent() }}{% endblock %}
+
+{% block body %}
+
+    <h1 class="display-5 mb-4">Liste des articles du blog</h1>
+    <div class="row mb-2">
+    {% for post in posts %}
+        <div class="col-md-6">
+            <div class="row g-0 border border-secondary bg-secondary bg-opacity-10 rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+                <div class="col p-4 d-flex flex-column position-static">
+                    <h3 class="mb-0">{{ post.title }}</h3>
+                    <div class="mb-1 text-secondary">{{ post.updatedAt|format_datetime(pattern="MMMM yyyy", locale="fr")|capitalize }}</div>
+                    <p class="card-text mb-auto">{{ post.lede }}</p>
+                    <a href="{{ path('post', {'slug': post.slug}) }}" class="stretched-link link-secondary">Lire la suite...</a>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+    </div>
+
+{% endblock %}

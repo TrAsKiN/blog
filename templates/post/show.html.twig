@@ -1,0 +1,29 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Blog &middot; {{ parent() }}{% endblock %}
+
+{% block body %}
+
+    <article class="blog-post">
+        <h1 class="blog-post-title mb-1">{{ post.title }}</h1>
+        <p class="blog-post-meta">
+            Écrit par {{ post.author.username }} le {{ post.createdAt|date("d/m/Y") }} à {{ post.createdAt|date("H:m") }}
+            {% if post.updateddAt != post.createdAt %}
+                <small class="fst-italic">(dernière modification le {{ post.updateddAt|date("d/m/Y") }} à {{ post.updateddAt|date("H:m") }})</small>
+            {% endif %}
+        </p>
+        <div class="text-justify">
+            <p class="lead">{{ post.lede|nl2br }}</p>
+            <p>{{ post.content|nl2br }}</p>
+        </div>
+    </article>
+    <aside>
+        <h2 class="h5">Commentaire(s)</h2>
+        {% for comment in post.comments %}
+        {% include 'post/_comment.html.twig' with {'comment': comment} %}
+        {% else %}
+        <p class="text-secondary fst-italic">Aucun commentaire sur cet article pour le moment.</p>
+        {% endfor %}
+    </aside>
+
+{% endblock %}
