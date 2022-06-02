@@ -9,7 +9,9 @@
         <div class="col-md-8">
             <h2 class="blog-caption h4 mb-3">Articles récents</h2>
             {% for post in posts %}
-                {% include 'home/_post.html.twig' with {'post': post} %}
+            {% include 'home/_post.html.twig' with {'post': post} %}
+            {% else %}
+            <p class="text-secondary fst-italic">Aucun article</p>
             {% endfor %}
         </div>
         {% include 'home/_about.html.twig' %}

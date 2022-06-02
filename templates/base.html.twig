@@ -41,6 +41,8 @@
                         {% set posts = lastPosts(4) %}
                         {% for post in posts %}
                             <li class="nav-item mb-2"><a href="{{ path('post', {'slug': post.slug}) }}" class="nav-link p-0 link-secondary">{{ post.title }}</a></li>
+                        {% else %}
+                            <li class="nav-item mb-2 text-secondary">Aucun article</li>
                         {% endfor %}
                     </ul>
                 </div>
