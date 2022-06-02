@@ -37,4 +37,9 @@ class App
             return new EmptyResponse(404);
         }
     }
+
+    public function getContainer(): Container
+    {
+        return $this->container;
+    }
 }
