@@ -2,16 +2,21 @@
 
 namespace Blog\Entity;
 
+use Blog\Core\Entity;
 use DateTime;
+use Exception;
 
-class Post
+class Post extends Entity
 {
-    public int $id;
-    public string $title;
-    public string $lede;
-    public string $content;
-    public ?DateTime $createdAt;
-    public ?DateTime $updatedAt;
+    private readonly int $id;
+    private string $slug;
+    private string $title;
+    private string $lede;
+    private string $content;
+    private ?DateTime $createdAt;
+    private ?DateTime $updatedAt;
+    private int|User $author;
+    private array|int $comments = [];
 
     public function getId(): int
     {
@@ -53,9 +58,12 @@ class Post
         return $this->createdAt;
     }
 
-    public function setCreatedAt(DateTime $createdAt): void
+    /**
+     * @throws Exception
+     */
+    public function setCreatedAt($createdAt): void
     {
-        $this->createdAt = $createdAt;
+        $this->createdAt = new DateTime($createdAt);
     }
 
     public function getUpdatedAt(): DateTime
@@ -63,8 +71,41 @@ class Post
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(DateTime $updatedAt): void
+    /**
+     * @throws Exception
+     */
+    public function setUpdatedAt($updatedAt): void
     {
-        $this->updatedAt = $updatedAt;
+        $this->updatedAt = new DateTime($updatedAt);
+    }
+
+    public function getSlug(): string
+    {
+        return $this->slug;
+    }
+
+    public function setSlug(string $slug): void
+    {
+        $this->slug = $slug;
+    }
+
+    public function getAuthor(): User|int
+    {
+        return $this->author;
+    }
+
+    public function setAuthor(User|int $author): void
+    {
+        $this->author = $author;
+    }
+
+    public function getComments(): array|int
+    {
+        return $this->comments;
+    }
+
+    public function setComments(array|int $comments): void
+    {
+        $this->comments = $comments;
     }
 }
