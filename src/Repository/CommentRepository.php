@@ -6,5 +6,4 @@ use Blog\Core\Database;
 
 class CommentRepository extends Database
 {
-
 }

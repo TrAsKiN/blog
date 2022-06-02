@@ -10,18 +10,18 @@ use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
 
-class HomeController extends Controller
+class BlogController extends Controller
 {
     /**
      * @throws RuntimeError
      * @throws SyntaxError
      * @throws LoaderError
      */
-    #[Route('/', name: 'home')]
-    public function home(PostRepository $postRepository): ResponseInterface
+    #[Route('/blog/{page}', name: 'blog')]
+    public function index(int $page, PostRepository $postRepository): ResponseInterface
     {
-        $posts = $postRepository->getPaginatedList(1, 3);
-        return $this->render('home/home.html.twig', [
+        $posts = $postRepository->getPaginatedList($page);
+        return $this->render('blog/index.html.twig', [
             'posts' => $posts,
         ]);
     }

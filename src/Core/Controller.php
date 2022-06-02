@@ -2,6 +2,9 @@
 
 namespace Blog\Core;
 
+use Composer\Autoload\ClassMapGenerator;
+use DI\DependencyException;
+use DI\NotFoundException;
 use Laminas\Diactoros\Response\HtmlResponse;
 use Laminas\Diactoros\Response\RedirectResponse;
 use Psr\Http\Message\ResponseInterface;
@@ -10,16 +13,23 @@ use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
 use Twig\Extra\Intl\IntlExtension;
-use Twig\TwigFunction;
 
 abstract class Controller
 {
+    /**
+     * @throws DependencyException
+     * @throws NotFoundException
+     */
     public function __construct(
         private readonly Environment $twig,
-        private readonly Router $router
+        private readonly Router $router,
+        private readonly App $app
     ) {
         $this->twig->addExtension(new IntlExtension());
-        $this->twig->addFunction(new TwigFunction('path', [$this->router, 'generateUri']));
+        $extensions = ClassMapGenerator::createMap(__DIR__ . '/../TwigExtension');
+        foreach ($extensions as $class => $file) {
+            $this->twig->addExtension($this->app->getContainer()->get($class));
+        }
     }
 
     /**

@@ -2,18 +2,26 @@
 
 namespace Blog\Entity;
 
+use Blog\Core\Entity;
 use DateTime;
+use Exception;
 
-class Comment
+class Comment extends Entity
 {
-    public int $id;
-    public string $content;
-    public ?DateTime $createdAt;
-    public bool $valid = false;
+    private int $id;
+    private string $content;
+    private ?DateTime $createdAt;
+    private bool $valid = false;
+    private int|User $author;
 
     public function getId(): int
     {
         return $this->id;
+    }
+
+    public function setId(int $id): void
+    {
+        $this->id = $id;
     }
 
     public function getContent(): string
@@ -31,9 +39,12 @@ class Comment
         return $this->createdAt;
     }
 
-    public function setCreatedAt(DateTime $createdAt): void
+    /**
+     * @throws Exception
+     */
+    public function setCreatedAt($createdAt): void
     {
-        $this->createdAt = $createdAt;
+        $this->createdAt = new DateTime($createdAt);
     }
 
     public function isValid(): bool
@@ -44,5 +55,15 @@ class Comment
     public function setValid(bool $valid): void
     {
         $this->valid = $valid;
+    }
+
+    public function getAuthor(): User|int
+    {
+        return $this->author;
+    }
+
+    public function setAuthor(User|int $author): void
+    {
+        $this->author = $author;
     }
 }

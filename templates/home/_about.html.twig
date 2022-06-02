@@ -1,17 +1,11 @@
 <div class="col-md-4">
     <div class="position-sticky">
-        <div class="p-4 mb-3 bg-secondary bg-opacity-10 rounded">
-            <h4 class="fst-italic">À propos</h4>
-            <p class="mb-0">Vous trouverez ici des articles sur des sujets aussi divers que variés.</p>
+        <div class="d-grid mb-3">
+            <a href="{{ path('blog', {'page': 1}) }}" class="btn btn-secondary">Liste des articles</a>
         </div>
-
-        <div class="p-4">
-            <h4 class="fst-italic">Archives</h4>
-            <ol class="list-unstyled mb-0">
-                {% for i in 0..0 %}
-                    <li><a href="#" class="link-secondary">{{ "now"|date_modify("-"~ i ~" month")|format_datetime(pattern="MMMM yyyy", locale="fr")|capitalize }}</a></li>
-                {% endfor %}
-            </ol>
+        <div class="p-4 bg-secondary bg-opacity-10 rounded">
+            <h4 class="fst-italic">À propos</h4>
+            <p class="mb-0 text-justify">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean cursus nisi a erat tempor sollicitudin. Curabitur mattis diam lobortis finibus pellentesque. Etiam quis auctor tortor, eu viverra nunc. Aliquam facilisis.</p>
         </div>
     </div>
 </div>

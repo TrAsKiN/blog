@@ -2,15 +2,17 @@
 
 namespace Blog\Entity;
 
-class User
+use Blog\Core\Entity;
+
+class User extends Entity
 {
-    public int $id;
-    public string $username;
-    public string $password;
-    public string $email;
-    public mixed $roles = [];
-    public bool $active = false;
-    public ?string $token = null;
+    private int $id;
+    private string $username;
+    private string $password;
+    private string $email;
+    private mixed $roles = [];
+    private bool $active = false;
+    private ?string $token = null;
 
     public function __construct()
     {
@@ -20,6 +22,11 @@ class User
     public function getId(): int
     {
         return $this->id;
+    }
+
+    public function setId(int $id): void
+    {
+        $this->id = $id;
     }
 
     public function getUsername(): string
