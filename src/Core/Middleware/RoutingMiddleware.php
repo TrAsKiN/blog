@@ -2,8 +2,8 @@
 
 namespace Blog\Core\Middleware;
 
-use Blog\Core\App;
 use Blog\Core\Router;
+use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -13,7 +13,7 @@ class RoutingMiddleware implements MiddlewareInterface
 {
     public function __construct(
         private readonly Router $router,
-        private readonly App $app
+        private readonly ContainerInterface $container
     ) {
     }
 
@@ -21,7 +21,7 @@ class RoutingMiddleware implements MiddlewareInterface
     {
         $matches = $this->router->match($request);
         if (!empty($matches)) {
-            return $this->app->getContainer()->call([
+            return $this->container->call([
                 $matches['route']->controller,
                 $matches['route']->action
             ], $matches['params']);
