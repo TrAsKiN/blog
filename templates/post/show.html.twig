@@ -8,8 +8,10 @@
         <h1 class="blog-post-title mb-1">{{ post.title }}</h1>
         <p class="blog-post-meta">
             Écrit par {{ post.author.username }} le {{ post.createdAt|date("d/m/Y") }} à {{ post.createdAt|date("H:m") }}
-            {% if post.updateddAt != post.createdAt %}
-                <small class="fst-italic">(dernière modification le {{ post.updateddAt|date("d/m/Y") }} à {{ post.updateddAt|date("H:m") }})</small>
+            {% if post.createdAt != post.updatedAt %}
+            <small class="fst-italic">
+                (dernière modification le {{ post.updateddAt|date("d/m/Y") }} à {{ post.updateddAt|date("H:m") }})
+            </small>
             {% endif %}
         </p>
         <div class="text-justify">
