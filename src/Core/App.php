@@ -2,40 +2,34 @@
 
 namespace Blog\Core;
 
+use Blog\Core\Handler\NotFoundHandler;
+use Blog\Core\Handler\RequestHandler;
+use Blog\Core\Middleware\RoutingMiddleware;
 use DI\Container;
-use Exception;
-use Laminas\Diactoros\Response\EmptyResponse;
+use DI\DependencyException;
+use DI\NotFoundException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
 class App
 {
-    public function __construct(
-        private readonly Container $container,
-        private readonly Router $router
-    ) {
-    }
+    private RequestHandlerInterface $handler;
 
     /**
-     * @param ServerRequestInterface $request
-     * @return ResponseInterface
-     * @throws Exception
+     * @throws DependencyException
+     * @throws NotFoundException
      */
+    public function __construct(
+        private readonly Container $container
+    ) {
+        $this->handler = new RequestHandler(new NotFoundHandler());
+        $this->handler->add($this->container->get(RoutingMiddleware::class));
+    }
+
     public function run(ServerRequestInterface $request): ResponseInterface
     {
-        $matches = $this->router->match($request);
-        if (!empty($matches)) {
-            $response = $this->container->call([
-                $matches['route']->controller,
-                $matches['route']->action
-            ], $matches['params']);
-            if (!$response instanceof ResponseInterface) {
-                throw new Exception("The Controller has not returned a response implementing ResponseInterface!");
-            }
-            return $response;
-        } else {
-            return new EmptyResponse(404);
-        }
+        return $this->handler->handle($request);
     }
 
     public function getContainer(): Container

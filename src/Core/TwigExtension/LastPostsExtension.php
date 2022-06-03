@@ -1,6 +1,6 @@
 <?php
 
-namespace Blog\TwigExtension;
+namespace Blog\Core\TwigExtension;
 
 use Blog\Repository\PostRepository;
 use Twig\Extension\AbstractExtension;

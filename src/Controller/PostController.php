@@ -2,8 +2,8 @@
 
 namespace Blog\Controller;
 
+use Blog\Core\Attribute\Route;
 use Blog\Core\Controller;
-use Blog\Core\Route;
 use Blog\Repository\PostRepository;
 use Psr\Http\Message\ResponseInterface;
 use Twig\Error\LoaderError;

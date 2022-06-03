@@ -12,7 +12,7 @@ require_once $rootPath . '/vendor/autoload.php';
 try {
     $builder = new ContainerBuilder();
     if (!file_exists($rootPath . '/config.php')) {
-        throw new RuntimeException("The configuration file does not exist!");
+        throw new Exception("The configuration file does not exist!");
     }
     $builder->addDefinitions($rootPath . '/config.php');
     $builder->addDefinitions($rootPath . '/config/definitions.php');

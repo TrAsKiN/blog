@@ -2,6 +2,7 @@
 
 namespace Blog\Core;
 
+use Blog\Core\Attribute\Route;
 use Composer\Autoload\ClassMapGenerator;
 use Psr\Http\Message\ServerRequestInterface;
 use ReflectionClass;
