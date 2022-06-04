@@ -1,6 +1,6 @@
 <?php
 
-namespace Blog\TwigExtension;
+namespace Blog\Core\TwigExtension;
 
 use Blog\Core\Router;
 use Twig\Extension\AbstractExtension;

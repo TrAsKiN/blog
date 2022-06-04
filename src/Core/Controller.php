@@ -26,7 +26,7 @@ abstract class Controller
         private readonly App $app
     ) {
         $this->twig->addExtension(new IntlExtension());
-        $extensions = ClassMapGenerator::createMap(__DIR__ . '/../TwigExtension');
+        $extensions = ClassMapGenerator::createMap(__DIR__ . '/TwigExtension');
         foreach ($extensions as $class => $file) {
             $this->twig->addExtension($this->app->getContainer()->get($class));
         }

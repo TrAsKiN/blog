@@ -1,6 +1,6 @@
 <?php
 
-namespace Blog\Core;
+namespace Blog\Core\Attribute;
 
 use Attribute;
 
