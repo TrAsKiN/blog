@@ -16,7 +16,9 @@ class User extends Entity
 
     public function __construct()
     {
-        $this->roles = json_decode($this->roles);
+        if (!is_array($this->roles)) {
+            $this->roles = json_decode($this->roles);
+        }
     }
 
     public function getId(): int
@@ -87,5 +89,10 @@ class User extends Entity
     public function setToken(?string $token): void
     {
         $this->token = $token;
+    }
+
+    public function __toString(): string
+    {
+        return $this->username ?? '';
     }
 }
