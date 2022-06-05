@@ -26,7 +26,6 @@ class RoutingMiddleware implements MiddlewareInterface
                 $matches['route']->action
             ], $matches['params']);
         }
-
         return $handler->handle($request);
     }
 }
