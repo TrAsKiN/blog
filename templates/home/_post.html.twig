@@ -3,7 +3,7 @@
         <a href="{{ path('post', {'slug': post.slug}) }}" class="link-light">{{ post.title }}</a>
     </h2>
     <p class="blog-post-meta">
-        {{ post.updatedAt|date("d/m/Y") }} par {{ post.author.username }}
+        {{ post.updatedAt|date("d/m/Y") }} par {{ post.author }}
         &middot;
         <small class="fst-italic">{{ post.comments }} commentaire{{ post.comments > 1 ? 's' }}</small>
     </p>
