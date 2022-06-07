@@ -1,0 +1,26 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Connexion &middot; {{ parent() }}{% endblock %}
+
+{% block body %}
+
+    <h1>Connexion</h1>
+    <div class="col-md-5 mx-auto my-5">
+        <form method="post" action="{{ path('login') }}">
+            <div class="mb-3">
+                <label for="inputEmail" class="form-label">E-mail</label>
+                <input name="email" type="email" class="form-control" id="inputEmail" placeholder="nom@exemple.fr" value="{{ form.email ?? '' }}">
+            </div>
+            <div class="mb-3">
+                <label for="inputPassword" class="form-label">Mot de passe</label>
+                <input name="password" type="password" class="form-control" id="inputPassword" placeholder="Mot de passe">
+            </div>
+            <div class="my-4">
+                <button type="submit" class="btn btn-secondary">Se connecter</button>
+                <a href="{{ path('register') }}" class="btn btn-outline-secondary">Créer un compte</a>
+                <a href="#" class="btn btn-link link-secondary">Mot de passe oublié</a>
+            </div>
+        </form>
+    </div>
+
+{% endblock %}

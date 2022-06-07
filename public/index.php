@@ -2,11 +2,10 @@
 
 use Blog\Core\App;
 use DI\ContainerBuilder;
-use Laminas\Diactoros\Response\HtmlResponse;
-use Laminas\Diactoros\ServerRequestFactory;
+use Laminas\Diactoros\Response\TextResponse;
 use Laminas\HttpHandlerRunner\Emitter\SapiEmitter;
 
-$rootPath = __DIR__ . '/..';
+$rootPath = dirname(__DIR__);
 require_once $rootPath . '/vendor/autoload.php';
 
 try {
@@ -19,8 +18,11 @@ try {
     $container = $builder->build();
 
     $app = $container->get(App::class);
-    $response = $app->run(ServerRequestFactory::fromGlobals());
+    $response = $app->run();
     (new SapiEmitter())->emit($response);
 } catch (Exception $exception) {
-    (new SapiEmitter())->emit(new HtmlResponse($exception->getMessage(), 500));
+    (new SapiEmitter())->emit(new TextResponse(
+        $exception->getMessage() . PHP_EOL.PHP_EOL . $exception->getTraceAsString(),
+        500
+    ));
 }

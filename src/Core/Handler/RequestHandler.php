@@ -9,25 +9,31 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class RequestHandler implements RequestHandlerInterface
 {
-    private array $middleware = [];
+    private array $middlewares = [];
 
     public function __construct(
         private readonly RequestHandlerInterface $fallbackHandler
     ) {
     }
 
-    public function add(MiddlewareInterface $middleware)
+    public function pipe(MiddlewareInterface|array $middlewares)
     {
-        $this->middleware[] = $middleware;
+        if (is_array($middlewares)) {
+            foreach ($middlewares as $middleware) {
+                $this->middlewares[] = $middleware;
+            }
+        } else {
+            $this->middlewares[] = $middlewares;
+        }
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        if (empty($this->middleware)) {
+        if (empty($this->middlewares)) {
             return $this->fallbackHandler->handle($request);
         }
 
-        $middleware = array_shift($this->middleware);
+        $middleware = array_shift($this->middlewares);
         return $middleware->process($request, $this);
     }
 }
