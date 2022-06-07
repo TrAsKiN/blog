@@ -72,6 +72,24 @@ class Router
     }
 
     /**
+     * @param string $name
+     * @param array $parameters
+     * @return string|null
+     */
+    public function generateAbsoluteUri(string $name, array $parameters = []): ?string
+    {
+        $route = $this->getRoute($name);
+        if ($route) {
+            $uri = $route->path;
+            foreach ($route->parameters as $parameter) {
+                $uri = preg_replace(sprintf('#\{%s}#', $parameter), $parameters[$parameter], $uri);
+            }
+            return $_SERVER['SERVER_NAME'] . $uri;
+        }
+        return null;
+    }
+
+    /**
      * @param Route $route
      * @param $controller
      * @param $action

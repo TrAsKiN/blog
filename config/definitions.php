@@ -1,6 +1,8 @@
 <?php
 
 use Psr\Container\ContainerInterface;
+use Symfony\Component\Mailer\Mailer;
+use Symfony\Component\Mailer\Transport;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
 
@@ -19,5 +21,8 @@ return [
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
             ]
         );
+    },
+    Mailer::class => function (ContainerInterface $container) {
+        return new Mailer(Transport::fromDsn($container->get('mailer')));
     },
 ];

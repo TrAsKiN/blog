@@ -17,6 +17,7 @@ class PathExtension extends AbstractExtension
     {
         return [
             new TwigFunction('path', [$this->router, 'generateUri']),
+            new TwigFunction('url', [$this->router, 'generateAbsoluteUri']),
         ];
     }
 }
