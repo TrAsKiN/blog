@@ -1,10 +1,15 @@
 <?php
 
+use Laminas\Diactoros\ServerRequestFactory;
 use Psr\Container\ContainerInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
 
 return [
+    ServerRequestInterface::class => function () {
+        return ServerRequestFactory::fromGlobals();
+    },
     Environment::class => function () {
         $loader = new FilesystemLoader(__DIR__ . '/../templates');
         return new Environment($loader);

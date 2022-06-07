@@ -11,11 +11,6 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class SessionMiddleware implements MiddlewareInterface
 {
-    public function __construct(
-        private readonly Session $session
-    ) {
-    }
-
     /**
      * @throws Exception
      */
@@ -23,9 +18,9 @@ class SessionMiddleware implements MiddlewareInterface
     {
         $cookies = $request->getCookieParams();
         $id = $cookies[session_name()] ?? bin2hex(random_bytes(16));
-        $this->session->open($id);
-        $response = $handler->handle($request);
-        $this->session->persist();
+        $session = new Session($id);
+        $response = $handler->handle($request->withAttribute(Session::class, $session));
+        $session->persist();
         if (empty($_SESSION)) {
             return $response;
         }
@@ -34,7 +29,7 @@ class SessionMiddleware implements MiddlewareInterface
             sprintf(
                 '%s=%s; path=%s',
                 session_name(),
-                $this->session->getId(),
+                $session->id,
                 ini_get('session.cookie_path')
             )
         );

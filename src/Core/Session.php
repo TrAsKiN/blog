@@ -4,22 +4,11 @@ namespace Blog\Core;
 
 class Session
 {
-    private string $id;
     private array $session;
 
-    public function __toString(): string
-    {
-        return json_encode($this->session);
-    }
-
-    public function getId(): string
-    {
-        return $this->id;
-    }
-
-    public function open(string $id): void
-    {
-        $this->id = $id;
+    public function __construct(
+        public readonly string $id
+    ) {
         session_id($id);
         session_start([
             'use_cookies' => false,
@@ -41,6 +30,11 @@ class Session
     public function unset(string $name): void
     {
         unset($this->session[$name]);
+    }
+
+    public function erase(): void
+    {
+        $this->session = [];
     }
 
     public function persist(): void

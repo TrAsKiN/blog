@@ -6,7 +6,7 @@ use Blog\Core\Authentication\UserProvider;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
-class UserExtension extends AbstractExtension
+class RoleExtension extends AbstractExtension
 {
     public function __construct(
         private readonly UserProvider $provider
@@ -16,14 +16,12 @@ class UserExtension extends AbstractExtension
     public function getFunctions(): array
     {
         return [
-            new TwigFunction(
-                'user',
-                [$this->provider, 'getUser']
-            ),
-            new TwigFunction(
-                'isAuthenticated',
-                [$this->provider, 'isAuthenticated']
-            )
+            new TwigFunction('hasRole', [$this, 'hasRole']),
         ];
+    }
+
+    public function hasRole(string $role): bool
+    {
+        return in_array($role, $this->provider->getUser()->getRoles());
     }
 }

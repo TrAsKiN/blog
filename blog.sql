@@ -10,7 +10,11 @@ create table if not exists `users`
     `active`        tinyint(1) default 0                 not null,
     `token`         varchar(255)                         null,
     constraint users_email_uindex
-        unique (`email`)
+        unique (`email`),
+    constraint users_token_uindex
+        unique (`token`),
+    constraint users_username_uindex
+        unique (`username`)
 );
 
 create table if not exists `posts`

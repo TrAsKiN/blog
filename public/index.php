@@ -3,7 +3,6 @@
 use Blog\Core\App;
 use DI\ContainerBuilder;
 use Laminas\Diactoros\Response\TextResponse;
-use Laminas\Diactoros\ServerRequestFactory;
 use Laminas\HttpHandlerRunner\Emitter\SapiEmitter;
 
 $rootPath = dirname(__DIR__);
@@ -19,7 +18,7 @@ try {
     $container = $builder->build();
 
     $app = $container->get(App::class);
-    $response = $app->run(ServerRequestFactory::fromGlobals());
+    $response = $app->run();
     (new SapiEmitter())->emit($response);
 } catch (Exception $exception) {
     (new SapiEmitter())->emit(new TextResponse(

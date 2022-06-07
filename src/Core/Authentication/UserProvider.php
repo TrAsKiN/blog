@@ -1,19 +1,18 @@
 <?php
 
-namespace Blog\Core;
+namespace Blog\Core\Authentication;
 
 use Blog\Entity\User;
 use Blog\Repository\UserRepository;
 
 class UserProvider
 {
-    private User $user;
+    private ?User $user;
     private bool $isAuthenticated = false;
 
     public function __construct(
         private readonly UserRepository $userRepository
     ) {
-        $this->user = new User();
     }
 
     public function retrieve(string $username): User|bool
@@ -23,11 +22,10 @@ class UserProvider
             return false;
         }
         $this->setUser($user);
-        $this->setIsAuthenticated(true);
         return $this->user;
     }
 
-    public function getUser(): User
+    public function getUser(): ?User
     {
         return $this->user;
     }
@@ -42,7 +40,7 @@ class UserProvider
         return $this->isAuthenticated;
     }
 
-    public function setIsAuthenticated(bool $isAuthenticated): void
+    public function setAuthenticated(bool $isAuthenticated): void
     {
         $this->isAuthenticated = $isAuthenticated;
     }

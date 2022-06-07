@@ -2,10 +2,11 @@
 
 namespace Blog\Core\Middleware;
 
-use Blog\Core\Session;
-use Blog\Core\UserProvider;
-use Blog\Entity\User;
+use Blog\Core\Attribute\Route;
+use Blog\Core\Authentication\UserProvider;
+use Blog\Core\Router;
 use Exception;
+use Laminas\Diactoros\Response\RedirectResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -14,7 +15,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 class SecurityMiddleware implements MiddlewareInterface
 {
     public function __construct(
-        private readonly Session $session,
+        private readonly Router $router,
         private readonly UserProvider $provider
     ) {
     }
@@ -24,29 +25,18 @@ class SecurityMiddleware implements MiddlewareInterface
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        if (!$this->session->get('username')) {
+        $route = $request->getAttribute(Route::class);
+        if (!$route instanceof Route || !$route->restricted) {
             return $handler->handle($request);
         }
-        $user = $this->provider->retrieve($this->session->get('username'));
-        if (!$user instanceof User) {
-            throw new Exception(
-                sprintf("Username '%s' does not exists!", $this->provider->getUser()->getUsername())
-            );
+        if (!$this->provider->isAuthenticated()) {
+            return new RedirectResponse($this->router->generateUri('home'));
         }
-        $this->session->set('username', $user->getUsername());
+        $user = $this->provider->getUser();
+        $missingRoles = array_diff($route->roles, $user->getRoles());
+        if (!empty($missingRoles)) {
+            return new RedirectResponse($this->router->generateUri('home'));
+        }
         return $handler->handle($request);
-    }
-
-    private function getOptimalCost(): int
-    {
-        $timeTarget = 0.05;
-        $cost = 8;
-        do {
-            $cost++;
-            $start = microtime(true);
-            password_hash('test', PASSWORD_BCRYPT, ['cost' => $cost]);
-            $end = microtime(true);
-        } while (($end - $start) < $timeTarget);
-        return $cost;
     }
 }

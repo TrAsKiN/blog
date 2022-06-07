@@ -2,6 +2,7 @@
 
 namespace Blog\Core;
 
+use Blog\Core\Authentication\UserProvider;
 use Blog\Entity\User;
 use Composer\Autoload\ClassMapGenerator;
 use Laminas\Diactoros\Response\HtmlResponse;
@@ -58,5 +59,14 @@ abstract class Controller
     protected function isAuthenticated(): bool
     {
         return $this->provider->isAuthenticated();
+    }
+
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
+    protected function get(string $id)
+    {
+        return $this->container->get($id);
     }
 }
