@@ -5,4 +5,5 @@ return [
     'db.name' => 'blog',
     'db.username' => 'root',
     'db.password' => null,
+    'mailer' => 'smtp://webmaster@localhost:25',
 ];
