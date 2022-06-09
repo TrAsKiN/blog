@@ -70,9 +70,9 @@ class UserController extends Controller
     #[Route('/register', name: 'register')]
     public function register(
         ServerRequestInterface $request,
-        FlashService           $messages,
-        PasswordEncoder        $encoder,
-        UserRepository         $repository
+        FlashService $messages,
+        PasswordEncoder $encoder,
+        UserRepository $repository
     ): ResponseInterface {
         $form = $this->get(Form::class);
         $requirements = [
