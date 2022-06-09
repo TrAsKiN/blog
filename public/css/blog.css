@@ -44,10 +44,6 @@ h1, h2, h3, h4, h5, h6 {
     border-radius: var(--bs-border-radius);
 }
 
-.blog-pagination {
-    margin-bottom: 4rem;
-}
-
 .blog-post {
     margin-bottom: 4rem;
 }
@@ -57,15 +53,6 @@ h1, h2, h3, h4, h5, h6 {
 .blog-post-meta {
     margin-bottom: 1.25rem;
     color: var(--bs-gray);
-}
-
-.blog-footer {
-    padding: 2.5rem 0;
-    color: var(--bs-gray);
-    text-align: center;
-}
-.blog-footer p:last-child {
-    margin-bottom: 0;
 }
 
 footer {
