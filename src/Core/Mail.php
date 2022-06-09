@@ -6,6 +6,7 @@ use Exception;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\Mailer;
 use Symfony\Component\Mime\Email;
+use TypeError;
 
 class Mail
 {
@@ -17,6 +18,7 @@ class Mail
     /**
      * @throws Exception
      * @throws TransportExceptionInterface
+     * @throws TypeError
      */
     public function send(string $from, string $to, string $subject, array $content): void
     {

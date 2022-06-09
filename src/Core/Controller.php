@@ -5,12 +5,14 @@ namespace Blog\Core;
 use Blog\Core\Authentication\UserProvider;
 use Blog\Entity\User;
 use Composer\Autoload\ClassMapGenerator;
+use InvalidArgumentException;
 use Laminas\Diactoros\Response\HtmlResponse;
 use Laminas\Diactoros\Response\RedirectResponse;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Psr\Http\Message\ResponseInterface;
+use RuntimeException;
 use Twig\Environment;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
@@ -22,6 +24,7 @@ abstract class Controller
     /**
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
+     * @throws RuntimeException
      */
     public function __construct(
         private readonly Environment $twig,
@@ -37,15 +40,19 @@ abstract class Controller
     }
 
     /**
+     * @throws LoaderError
      * @throws RuntimeError
      * @throws SyntaxError
-     * @throws LoaderError
+     * @throws InvalidArgumentException
      */
     protected function render(string $name, array $context = []): ResponseInterface
     {
         return new HtmlResponse($this->twig->render($name, $context));
     }
 
+    /**
+     * @throws InvalidArgumentException
+     */
     protected function redirect(string $name, array $parameters = []): ResponseInterface
     {
         return new RedirectResponse($this->router->generateUri($name, $parameters));

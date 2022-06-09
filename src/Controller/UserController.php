@@ -10,6 +10,7 @@ use Blog\Core\Session;
 use Blog\Entity\User;
 use Blog\Repository\UserRepository;
 use Exception;
+use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Twig\Error\LoaderError;
@@ -63,6 +64,7 @@ class UserController extends Controller
      * @throws SyntaxError
      * @throws RuntimeError
      * @throws LoaderError
+     * @throws InvalidArgumentException
      */
     #[Route('/register', name: 'register')]
     public function register(
@@ -105,6 +107,9 @@ class UserController extends Controller
         ]);
     }
 
+    /**
+     * @throws InvalidArgumentException
+     */
     #[Route('/logout', name: 'logout', restricted: true)]
     public function logout(ServerRequestInterface $request): ResponseInterface
     {

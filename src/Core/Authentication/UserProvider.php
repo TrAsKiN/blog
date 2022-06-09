@@ -4,6 +4,7 @@ namespace Blog\Core\Authentication;
 
 use Blog\Entity\User;
 use Blog\Repository\UserRepository;
+use PDOException;
 
 class UserProvider
 {
@@ -15,6 +16,9 @@ class UserProvider
     ) {
     }
 
+    /**
+     * @throws PDOException
+     */
     public function retrieve(string $username): User|bool
     {
         $user = $this->userRepository->findByUsername($username);

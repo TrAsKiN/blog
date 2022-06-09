@@ -4,9 +4,13 @@ namespace Blog\Repository;
 
 use Blog\Core\Database;
 use Blog\Entity\User;
+use PDOException;
 
 class UserRepository extends Database
 {
+    /**
+     * @throws PDOException
+     */
     public function findByUsername(string $username): mixed
     {
         $statement = $this->pdo->prepare('SELECT * FROM `users` WHERE `username` = :username');
@@ -16,6 +20,9 @@ class UserRepository extends Database
         return $statement->fetchObject(User::class);
     }
 
+    /**
+     * @throws PDOException
+     */
     public function findByEmail(string $email): mixed
     {
         $statement = $this->pdo->prepare('SELECT * FROM `users` WHERE `email` = :email');
@@ -34,6 +41,9 @@ class UserRepository extends Database
         ]);
     }
 
+    /**
+     * @throws PDOException
+     */
     public function addUser(User $user): bool|string
     {
         $statement = $this->pdo->prepare(
