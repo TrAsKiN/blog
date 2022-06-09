@@ -37,7 +37,7 @@ class Form
         return true;
     }
 
-    public function getData(string $key = null): object|array|null
+    public function getData(string $key = null): mixed
     {
         if (!is_null($key) && array_key_exists($key, $this->request->getParsedBody())) {
             return $this->request->getParsedBody()[$key];
