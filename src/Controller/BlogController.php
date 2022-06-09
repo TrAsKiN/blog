@@ -25,8 +25,6 @@ class BlogController extends Controller
     public function index(int $page, PostRepository $postRepository): ResponseInterface
     {
         $posts = $postRepository->getPaginatedList($page);
-        return $this->render('blog/index.html.twig', [
-            'posts' => $posts,
-        ]);
+        return $this->render('blog/index.html.twig', compact('posts'));
     }
 }

@@ -25,8 +25,6 @@ class PostController extends Controller
     public function index(string $slug, PostRepository $postRepository): ResponseInterface
     {
         $post = $postRepository->findWithSlug($slug);
-        return $this->render('post/show.html.twig', [
-            'post' => $post,
-        ]);
+        return $this->render('post/show.html.twig', compact('post'));
     }
 }

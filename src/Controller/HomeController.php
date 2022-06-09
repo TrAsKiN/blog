@@ -25,8 +25,6 @@ class HomeController extends Controller
     public function home(PostRepository $postRepository): ResponseInterface
     {
         $posts = $postRepository->getPaginatedList(1, 3);
-        return $this->render('home/home.html.twig', [
-            'posts' => $posts,
-        ]);
+        return $this->render('home/home.html.twig', compact('posts'));
     }
 }
