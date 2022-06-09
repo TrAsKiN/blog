@@ -22,7 +22,7 @@ try {
     (new SapiEmitter())->emit($response);
 } catch (Exception $exception) {
     (new SapiEmitter())->emit(new TextResponse(
-        $exception->getMessage() . PHP_EOL.PHP_EOL . $exception->getTraceAsString(),
+        $exception->getMessage() . PHP_EOL . PHP_EOL . $exception->getTraceAsString(),
         500
     ));
 }

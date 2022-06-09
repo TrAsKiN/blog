@@ -2,14 +2,14 @@
 
 namespace Blog\Core\TwigExtension;
 
-use Blog\Core\FlashMessages;
+use Blog\Core\Service\FlashService;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
 class FlashExtension extends AbstractExtension
 {
     public function __construct(
-        private readonly FlashMessages $messages
+        private readonly FlashService $messages
     ) {
     }
 

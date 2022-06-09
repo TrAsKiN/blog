@@ -7,6 +7,7 @@ use Composer\Autoload\ClassMapGenerator;
 use Psr\Http\Message\ServerRequestInterface;
 use ReflectionClass;
 use ReflectionException;
+use RuntimeException;
 
 class Router
 {
@@ -17,6 +18,7 @@ class Router
 
     /**
      * @throws ReflectionException
+     * @throws RuntimeException
      */
     public function __construct()
     {
@@ -35,10 +37,6 @@ class Router
         }
     }
 
-    /**
-     * @param ServerRequestInterface $request
-     * @return array|null
-     */
     public function match(ServerRequestInterface $request): ?array
     {
         foreach ($this->routes as $route) {
@@ -53,11 +51,6 @@ class Router
         return null;
     }
 
-    /**
-     * @param string $name
-     * @param array $parameters
-     * @return string|null
-     */
     public function generateUri(string $name, array $parameters = []): ?string
     {
         $route = $this->getRoute($name);
@@ -71,40 +64,21 @@ class Router
         return null;
     }
 
-    /**
-     * @param string $name
-     * @param array $parameters
-     * @return string|null
-     */
     public function generateAbsoluteUri(string $name, array $parameters = []): ?string
     {
-        $route = $this->getRoute($name);
-        if ($route) {
-            $uri = $route->path;
-            foreach ($route->parameters as $parameter) {
-                $uri = preg_replace(sprintf('#\{%s}#', $parameter), $parameters[$parameter], $uri);
-            }
+        if ($uri = $this->generateUri($name, $parameters)) {
             return $_SERVER['SERVER_NAME'] . $uri;
         }
         return null;
     }
 
-    /**
-     * @param Route $route
-     * @param $controller
-     * @param $action
-     */
-    private function addRoute(Route $route, $controller, $action): void
+    private function addRoute(Route $route, string $controller, string $action): void
     {
         $route->controller = $controller;
         $route->action = $action;
         $this->routes[$route->name] = $route;
     }
 
-    /**
-     * @param string $name
-     * @return Route|null
-     */
     private function getRoute(string $name): ?Route
     {
         foreach ($this->routes as $route) {

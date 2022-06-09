@@ -4,12 +4,17 @@ namespace Blog\Controller;
 
 use Blog\Core\Attribute\Route;
 use Blog\Core\Authentication\PasswordEncoder;
+use Blog\Core\Authentication\UserProvider;
 use Blog\Core\Controller;
-use Blog\Core\FlashMessages;
+use Blog\Core\Form;
+use Blog\Core\Service\FlashService;
 use Blog\Core\Session;
 use Blog\Entity\User;
 use Blog\Repository\UserRepository;
 use Exception;
+use InvalidArgumentException;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Twig\Error\LoaderError;
@@ -19,76 +24,69 @@ use Twig\Error\SyntaxError;
 class UserController extends Controller
 {
     /**
+     * @throws ContainerExceptionInterface
+     * @throws InvalidArgumentException
      * @throws LoaderError
+     * @throws NotFoundExceptionInterface
      * @throws RuntimeError
      * @throws SyntaxError
-     * @throws Exception
      */
     #[Route('/login', name: 'login')]
     public function login(
         ServerRequestInterface $request,
-        UserRepository $repository,
-        PasswordEncoder $encoder,
-        FlashMessages $messages
+        UserProvider $provider,
+        FlashService $messages
     ): ResponseInterface {
         $session = $request->getAttribute(Session::class);
-        if ($request->getMethod() === 'POST') {
-            $form = $request->getParsedBody();
+        $form = $this->get(Form::class);
+        $requirements = [
+            'required' => ['email', 'password'],
+            'notEmpty' => ['email', 'password'],
+        ];
+        if ($form->isPost() && $form->isValid($requirements)) {
             try {
-                $user = $repository->findByEmail($form['email']);
-                if (!$user instanceof User) {
-                    throw new Exception("User does not exist!");
-                }
-                if (!$encoder->isPasswordValid($user->getPassword(), $form['password'])) {
-                    throw new Exception("Password is not correct!");
-                }
-                $token = $encoder->createToken();
-                if (!$repository->setToken($user->getId(), $token)) {
-                    throw new Exception("Unable to modify user's token");
-                }
-                $user->setToken($token);
+                $user = $provider->login($form->getData('email'), $form->getData('password'));
                 $session->set('username', $user->getUsername());
                 $session->set('token', $user->getToken());
+                $messages->addFlash("Vous êtes connecté !", 'success');
                 return $this->redirect('home');
             } catch (Exception $exception) {
                 $messages->addFlash($exception->getMessage(), 'danger');
             }
         }
         return $this->render('user/login.html.twig', [
-            'form' => $form ?? null,
+            'form' => $form->getData(),
         ]);
     }
 
     /**
-     * @throws SyntaxError
-     * @throws RuntimeError
+     * @throws InvalidArgumentException
      * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     #[Route('/register', name: 'register')]
     public function register(
         ServerRequestInterface $request,
-        FlashMessages $messages,
+        FlashService $messages,
         PasswordEncoder $encoder,
         UserRepository $repository
     ): ResponseInterface {
-        if ($request->getMethod() === 'POST') {
-            $form = $request->getParsedBody();
+        $form = $this->get(Form::class);
+        $requirements = [
+            'required' => ['email', 'username', 'password', 'passwordConfirm'],
+            'notEmpty' => ['email', 'username', 'password', 'passwordConfirm'],
+            'length' => ['password', null, 50],
+            'isEquals' => ['password', 'passwordConfirm'],
+        ];
+        if ($form->isPost() && $form->isValid($requirements)) {
             try {
-                if (empty($form)
-                    || empty($form['email'])
-                    || empty($form['username'])
-                    || empty($form['password'])
-                    || empty($form['passwordConfirm'])
-                ) {
-                    throw new Exception("All fields in the form are required!");
-                }
-                if ($form['password'] !== $form['passwordConfirm']) {
-                    throw new Exception("The password and its confirmation are not identical");
-                }
                 $user = new User();
-                $user->setUsername($form['username']);
-                $user->setEmail($form['email']);
-                $user->setPassword($encoder->encodePassword($form['password']));
+                $user->setUsername($form->getData('username'));
+                $user->setEmail($form->getData('email'));
+                $user->setPassword($encoder->encodePassword($form->getData('password')));
                 $user->setToken($encoder->createToken());
                 $user->setActive(true);
                 if (!$repository->addUser($user)) {
@@ -101,10 +99,13 @@ class UserController extends Controller
             }
         }
         return $this->render('user/register.html.twig', [
-            'form' => $form ?? null,
+            'form' => $form->getData(),
         ]);
     }
 
+    /**
+     * @throws InvalidArgumentException
+     */
     #[Route('/logout', name: 'logout', restricted: true)]
     public function logout(ServerRequestInterface $request): ResponseInterface
     {

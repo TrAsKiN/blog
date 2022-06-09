@@ -7,9 +7,13 @@ use Blog\Entity\Comment;
 use Blog\Entity\Post;
 use Blog\Entity\User;
 use PDO;
+use PDOException;
 
 class PostRepository extends Database
 {
+    /**
+     * @throws PDOException
+     */
     public function getPaginatedList(int $page, int $max = 10): bool|array
     {
         $offset = $max * ($page - 1);
@@ -35,6 +39,9 @@ class PostRepository extends Database
         return $posts;
     }
 
+    /**
+     * @throws PDOException
+     */
     public function findWithSlug(string $slug)
     {
         $postStatement = $this->pdo->prepare('SELECT * FROM `posts` WHERE `slug` = :slug');

@@ -9,12 +9,12 @@ use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
 
 return [
-    ServerRequestInterface::class => function () {
-        return ServerRequestFactory::fromGlobals();
-    },
     Environment::class => function () {
         $loader = new FilesystemLoader(__DIR__ . '/../templates');
         return new Environment($loader);
+    },
+    Mailer::class => function (ContainerInterface $container) {
+        return new Mailer(Transport::fromDsn($container->get('mailer')));
     },
     PDO::class => function (ContainerInterface $container) {
         return new PDO(
@@ -27,7 +27,7 @@ return [
             ]
         );
     },
-    Mailer::class => function (ContainerInterface $container) {
-        return new Mailer(Transport::fromDsn($container->get('mailer')));
+    ServerRequestInterface::class => function () {
+        return ServerRequestFactory::fromGlobals();
     },
 ];
