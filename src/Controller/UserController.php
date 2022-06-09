@@ -6,8 +6,8 @@ use Blog\Core\Attribute\Route;
 use Blog\Core\Authentication\PasswordEncoder;
 use Blog\Core\Authentication\UserProvider;
 use Blog\Core\Controller;
-use Blog\Core\FlashMessages;
 use Blog\Core\Form;
+use Blog\Core\Service\FlashService;
 use Blog\Core\Session;
 use Blog\Entity\User;
 use Blog\Repository\UserRepository;
@@ -35,7 +35,7 @@ class UserController extends Controller
     public function login(
         ServerRequestInterface $request,
         UserProvider $provider,
-        FlashMessages $messages
+        FlashService $messages
     ): ResponseInterface {
         $session = $request->getAttribute(Session::class);
         $form = $this->get(Form::class);
@@ -45,7 +45,7 @@ class UserController extends Controller
         ];
         if ($form->isPost() && $form->isValid($requirements)) {
             try {
-                $user = $provider->login($form->getForm()['email'], $form->getForm()['password']);
+                $user = $provider->login($form->getData('email'), $form->getData('password'));
                 $session->set('username', $user->getUsername());
                 $session->set('token', $user->getToken());
                 $messages->addFlash("Vous êtes connecté !", 'success');
@@ -55,7 +55,7 @@ class UserController extends Controller
             }
         }
         return $this->render('user/login.html.twig', [
-            'form' => $form->getForm(),
+            'form' => $form->getData(),
         ]);
     }
 
@@ -70,9 +70,9 @@ class UserController extends Controller
     #[Route('/register', name: 'register')]
     public function register(
         ServerRequestInterface $request,
-        FlashMessages $messages,
-        PasswordEncoder $encoder,
-        UserRepository $repository
+        FlashService           $messages,
+        PasswordEncoder        $encoder,
+        UserRepository         $repository
     ): ResponseInterface {
         $form = $this->get(Form::class);
         $requirements = [
@@ -84,9 +84,9 @@ class UserController extends Controller
         if ($form->isPost() && $form->isValid($requirements)) {
             try {
                 $user = new User();
-                $user->setUsername($form->getForm()['username']);
-                $user->setEmail($form->getForm()['email']);
-                $user->setPassword($encoder->encodePassword($form->getForm()['password']));
+                $user->setUsername($form->getData('username'));
+                $user->setEmail($form->getData('email'));
+                $user->setPassword($encoder->encodePassword($form->getData('password')));
                 $user->setToken($encoder->createToken());
                 $user->setActive(true);
                 if (!$repository->addUser($user)) {
@@ -99,7 +99,7 @@ class UserController extends Controller
             }
         }
         return $this->render('user/register.html.twig', [
-            'form' => $form->getForm(),
+            'form' => $form->getData(),
         ]);
     }
 

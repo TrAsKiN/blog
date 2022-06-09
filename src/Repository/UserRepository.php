@@ -32,6 +32,9 @@ class UserRepository extends Database
         return $statement->fetchObject(User::class);
     }
 
+    /**
+     * @throws PDOException
+     */
     public function setToken(int $id, string $token): bool
     {
         $statement = $this->pdo->prepare('UPDATE `users` SET `token` = :token WHERE `id` = :id');

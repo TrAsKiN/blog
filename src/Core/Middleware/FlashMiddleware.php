@@ -2,7 +2,7 @@
 
 namespace Blog\Core\Middleware;
 
-use Blog\Core\FlashMessages;
+use Blog\Core\Service\FlashService;
 use Blog\Core\Session;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -12,7 +12,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 class FlashMiddleware implements MiddlewareInterface
 {
     public function __construct(
-        private readonly FlashMessages $messages
+        private readonly FlashService $messages
     ) {
     }
 
