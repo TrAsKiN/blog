@@ -35,12 +35,50 @@ class UserRepository extends Database
     /**
      * @throws PDOException
      */
-    public function setToken(int $id, string $token): bool
+    public function findByToken(string $token): mixed
+    {
+        $statement = $this->pdo->prepare('SELECT * FROM `users` WHERE `token` = :token');
+        $statement->execute([
+            'token' => $token,
+        ]);
+        return $statement->fetchObject(User::class);
+    }
+
+    /**
+     * @throws PDOException
+     */
+    public function setToken(User $user, string $token): bool
     {
         $statement = $this->pdo->prepare('UPDATE `users` SET `token` = :token WHERE `id` = :id');
         return $statement->execute([
             'token' => $token,
-            'id' => $id,
+            'id' => $user->getId(),
+        ]);
+    }
+
+    /**
+     * @throws PDOException
+     */
+    public function updateUser(User $user): bool
+    {
+        $statement = $this->pdo->prepare(
+            'UPDATE `users` SET
+                `username` = :username,
+                `email` = :email,
+                `password` = :password,
+                `roles` = :roles,
+                `active` = :active,
+                `token` = :token
+                WHERE `id` = :id'
+        );
+        return $statement->execute([
+            'username' => $user->getUsername(),
+            'email' => $user->getEmail(),
+            'password' => $user->getPassword(),
+            'roles' => json_encode($user->getRoles()),
+            'active' => (int) $user->isActive(),
+            'token' => $user->getToken(),
+            'id' => $user->getId(),
         ]);
     }
 
@@ -58,7 +96,7 @@ class UserRepository extends Database
             'email' => $user->getEmail(),
             'password' => $user->getPassword(),
             'roles' => json_encode($user->getRoles()),
-            'active' => $user->isActive(),
+            'active' => (int) $user->isActive(),
             'token' => $user->getToken(),
         ]);
         return $this->pdo->lastInsertId();

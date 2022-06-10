@@ -27,7 +27,7 @@ abstract class Controller
      * @throws RuntimeException
      */
     public function __construct(
-        private readonly Environment $twig,
+        protected readonly Environment $twig,
         private readonly Router $router,
         private readonly ContainerInterface $container,
         private readonly UserProvider $provider

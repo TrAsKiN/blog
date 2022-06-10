@@ -45,7 +45,7 @@ class UserProvider
             throw new Exception("Password is not correct!");
         }
         $token = $this->encoder->createToken();
-        if (!$this->userRepository->setToken($user->getId(), $token)) {
+        if (!$this->userRepository->setToken($user, $token)) {
             throw new Exception("Unable to modify user's token");
         }
         $user->setToken($token);
