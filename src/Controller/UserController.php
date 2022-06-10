@@ -84,7 +84,6 @@ class UserController extends Controller
         if ($form->isPost() && $form->isValid($requirements)) {
             $user = $repository->findByEmail($form->getData('email'));
             if ($user instanceof User) {
-                // $user->setActive(false);
                 $user->setToken($encoder->createToken());
                 $repository->updateUser($user);
                 $mail->send(
