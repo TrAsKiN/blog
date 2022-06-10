@@ -1,0 +1,6 @@
+Mot de passe oublié
+
+Bonjour {{ user }},
+
+Une demande de changement de mot de passe pour votre compte sur le Blog de Simon a été faite.
+En vous rendant a cette adresse : {{ url('password', {'token': user.token}) }} vous pourrez définir un nouveau mot de passe.

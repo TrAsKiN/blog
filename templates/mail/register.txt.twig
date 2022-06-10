@@ -3,4 +3,4 @@ Création de compte sur le Blog de Simon
 Bonjour {{ user }},
 
 Votre compte sur le Blog de Simon ({{ url('home') }}) a bien été créé !
-Confirmez votre adresse en vous rendant a cette adresse : {{ url('activation', {'token': token}) }}
+Confirmez votre adresse en vous rendant a cette adresse : {{ url('activation', {'token': user.token}) }}
