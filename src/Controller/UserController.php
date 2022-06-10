@@ -7,19 +7,23 @@ use Blog\Core\Authentication\PasswordEncoder;
 use Blog\Core\Authentication\UserProvider;
 use Blog\Core\Controller;
 use Blog\Core\Form;
+use Blog\Core\Mail;
 use Blog\Core\Service\FlashService;
 use Blog\Core\Session;
 use Blog\Entity\User;
 use Blog\Repository\UserRepository;
 use Exception;
 use InvalidArgumentException;
+use PDOException;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
+use TypeError;
 
 class UserController extends Controller
 {
@@ -72,7 +76,8 @@ class UserController extends Controller
         ServerRequestInterface $request,
         FlashService $messages,
         PasswordEncoder $encoder,
-        UserRepository $repository
+        UserRepository $repository,
+        Mail $mail
     ): ResponseInterface {
         $form = $this->get(Form::class);
         $requirements = [
@@ -87,10 +92,27 @@ class UserController extends Controller
                 $user->setUsername($form->getData('username'));
                 $user->setEmail($form->getData('email'));
                 $user->setPassword($encoder->encodePassword($form->getData('password')));
+                $user->setActive(false);
                 $user->setToken($encoder->createToken());
-                $user->setActive(true);
                 if (!$repository->addUser($user)) {
                     throw new Exception("Unable to register user");
+                }
+                try {
+                    $mail->send(
+                        'moi@traskin.net',
+                        $user->getEmail(),
+                        'Création de compte',
+                        [
+                            'html' => $this->twig->render('mail/register.html.twig', [
+                                'token' => $user->getToken()
+                            ]),
+                            'text' => $this->twig->render('mail/register.txt.twig', [
+                                'token' => $user->getToken()
+                            ]),
+                        ]
+                    );
+                } catch (TransportExceptionInterface|TypeError $exception) {
+                    $messages->addFlash($exception->getMessage(), 'danger');
                 }
                 $messages->addFlash("Votre compte a bien été enregistré !", 'success');
                 return $this->redirect('login');
@@ -101,6 +123,31 @@ class UserController extends Controller
         return $this->render('user/register.html.twig', [
             'form' => $form->getData(),
         ]);
+    }
+
+    /**
+     * @throws InvalidArgumentException
+     * @throws PDOException
+     */
+    #[Route('/activate/{token}', name: 'activation')]
+    public function activation(
+        string $token,
+        ServerRequestInterface $request,
+        UserRepository $repository,
+        FlashService $messages
+    ): ResponseInterface {
+        $user = $repository->findByToken($token);
+        if (!$user instanceof User) {
+            $messages->addFlash("Impossible d'activer votre compte !", 'danger');
+            return $this->redirect('login');
+        }
+        $user->setActive(true);
+        $user->setToken(null);
+        if (!$repository->updateUser($user)) {
+            $messages->addFlash("Unable to update user", 'danger');
+        }
+        $messages->addFlash("Votre compte est désormais actif !", 'success');
+        return $this->redirect('login');
     }
 
     /**
