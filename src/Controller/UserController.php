@@ -65,12 +65,10 @@ class UserController extends Controller
      * @throws PDOException
      * @throws RuntimeError
      * @throws SyntaxError
-     * @throws TransportExceptionInterface
-     * @throws TypeError
      * @throws Exception
      */
     #[Route('/forgotten-password', name: 'forgotten')]
-    public function forgotten(
+    public function forgottenPassword(
         UserRepository $repository,
         FlashService $messages,
         Form $form,
@@ -86,19 +84,7 @@ class UserController extends Controller
             if ($user instanceof User) {
                 $user->setToken($encoder->createToken());
                 $repository->updateUser($user);
-                $mail->send(
-                    'moi@traskin.net',
-                    $user->getEmail(),
-                    'Mot de passe oublié',
-                    [
-                        'html' => $this->twig->render('mail/forgotten.html.twig', [
-                            'user' => $user,
-                        ]),
-                        'text' => $this->twig->render('mail/forgotten.txt.twig', [
-                            'user' => $user,
-                        ]),
-                    ]
-                );
+                $mail->send($user->getEmail(), 'Mot de passe oublié', 'forgotten', ['user' => $user]);
             }
             $messages->addFlash(
                 "Si cette adresse est associé à un compte, vous allez recevoir un mail pour changer votre mot de passe",
@@ -118,8 +104,8 @@ class UserController extends Controller
      * @throws PDOException
      * @throws Exception
      */
-    #[Route('/forgotten-password/{token}', name: 'password')]
-    public function password(
+    #[Route('/forgotten-password/{token}', name: 'changePassword')]
+    public function changePassword(
         string $token,
         Form $form,
         UserRepository $repository,
@@ -179,28 +165,11 @@ class UserController extends Controller
                 $user->setUsername($form->getData('username'));
                 $user->setEmail($form->getData('email'));
                 $user->setPassword($encoder->encodePassword($form->getData('password')));
-                $user->setActive(false);
                 $user->setToken($encoder->createToken());
                 if (!$repository->addUser($user)) {
                     throw new Exception("Unable to register user");
                 }
-                try {
-                    $mail->send(
-                        'moi@traskin.net',
-                        $user->getEmail(),
-                        'Création de compte',
-                        [
-                            'html' => $this->twig->render('mail/register.html.twig', [
-                                'user' => $user,
-                            ]),
-                            'text' => $this->twig->render('mail/register.txt.twig', [
-                                'user' => $user,
-                            ]),
-                        ]
-                    );
-                } catch (TransportExceptionInterface|TypeError $exception) {
-                    $messages->addFlash($exception->getMessage(), 'danger');
-                }
+                $mail->send($user->getEmail(), 'Création de compte', 'register', ['user' => $user]);
                 $messages->addFlash("Votre compte a bien été enregistré !", 'success');
                 return $this->redirect('login');
             } catch (Exception $exception) {
