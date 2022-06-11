@@ -3,25 +3,23 @@
 namespace Blog\Controller;
 
 use Blog\Core\Attribute\Route;
-use Blog\Core\Authentication\PasswordEncoder;
-use Blog\Core\Authentication\UserProvider;
 use Blog\Core\Controller;
-use Blog\Core\Form;
 use Blog\Core\Mail;
 use Blog\Core\Service\FlashService;
 use Blog\Core\Session;
 use Blog\Entity\User;
+use Blog\Form\ForgottenForm;
+use Blog\Form\LoginForm;
+use Blog\Form\RegisterForm;
+use Blog\Form\ResetPasswordForm;
 use Blog\Repository\UserRepository;
-use Exception;
 use InvalidArgumentException;
 use PDOException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
-use TypeError;
 
 class UserController extends Controller
 {
@@ -34,56 +32,37 @@ class UserController extends Controller
     #[Route('/login', name: 'login')]
     public function login(
         ServerRequestInterface $request,
-        UserProvider $provider,
         FlashService $messages,
-        Form $form
+        LoginForm $loginForm
     ): ResponseInterface {
         $session = $request->getAttribute(Session::class);
-        $requirements = [
-            'required' => ['email', 'password'],
-            'notEmpty' => ['email', 'password'],
-        ];
-        if ($form->isPost() && $form->isValid($requirements)) {
-            try {
-                $user = $provider->login($form->getData('email'), $form->getData('password'));
+        if ($loginForm->form->isPost() && $loginForm->form->isValid()) {
+            if ($user = $loginForm->getResult()) {
                 $session->set('username', $user->getUsername());
                 $session->set('token', $user->getToken());
                 $messages->addFlash("Vous êtes connecté !", 'success');
                 return $this->redirect('home');
-            } catch (Exception $exception) {
-                $messages->addFlash($exception->getMessage(), 'danger');
             }
         }
         return $this->render('user/login.html.twig', [
-            'form' => $form->getData(),
+            'form' => $loginForm->form->getData(),
         ]);
     }
 
     /**
      * @throws InvalidArgumentException
      * @throws LoaderError
-     * @throws PDOException
      * @throws RuntimeError
      * @throws SyntaxError
-     * @throws Exception
      */
     #[Route('/forgotten-password', name: 'forgotten')]
     public function forgottenPassword(
-        UserRepository $repository,
         FlashService $messages,
-        Form $form,
-        PasswordEncoder $encoder,
+        ForgottenForm $forgottenForm,
         Mail $mail
     ): ResponseInterface {
-        $requirements = [
-            'required' => ['email'],
-            'notEmpty' => ['email'],
-        ];
-        if ($form->isPost() && $form->isValid($requirements)) {
-            $user = $repository->findByEmail($form->getData('email'));
-            if ($user instanceof User) {
-                $user->setToken($encoder->createToken());
-                $repository->updateUser($user);
+        if ($forgottenForm->form->isPost() && $forgottenForm->form->isValid()) {
+            if ($user = $forgottenForm->getResult()) {
                 $mail->send($user->getEmail(), 'Mot de passe oublié', 'forgotten', ['user' => $user]);
             }
             $messages->addFlash(
@@ -92,50 +71,33 @@ class UserController extends Controller
             );
         }
         return $this->render('user/forgotten.html.twig', [
-            'form' => $form->getData(),
+            'form' => $forgottenForm->form->getData(),
         ]);
     }
 
     /**
-     * @throws SyntaxError
      * @throws InvalidArgumentException
-     * @throws RuntimeError
      * @throws LoaderError
-     * @throws PDOException
-     * @throws Exception
+     * @throws RuntimeError
+     * @throws SyntaxError
      */
-    #[Route('/forgotten-password/{token}', name: 'changePassword')]
-    public function changePassword(
+    #[Route('/reset-password/{token}', name: 'resetPassword')]
+    public function resetPassword(
         string $token,
-        Form $form,
-        UserRepository $repository,
-        FlashService $messages,
-        PasswordEncoder $encoder
+        ResetPasswordForm $resetPasswordForm,
+        FlashService $messages
     ): ResponseInterface {
-        $requirements = [
-            'required' => ['password', 'passwordConfirm'],
-            'notEmpty' => ['password', 'passwordConfirm'],
-            'length' => ['password', null, 50],
-            'isEquals' => ['password', 'passwordConfirm'],
-        ];
-        if ($form->isPost() && $form->isValid($requirements)) {
-            $user = $repository->findByToken($token);
-            if (!$user instanceof User) {
-                $messages->addFlash("Aucune correspondance avec un utilisateur enregistré !", 'danger');
-                return $this->redirect('forgotten');
-            }
-            $user->setPassword($encoder->encodePassword($form->getData('password')));
-            $user->setToken(null);
-            if (!$repository->updateUser($user)) {
-                $messages->addFlash("Impossible de mettre à jour les informations !", 'danger');
+        if ($resetPasswordForm->form->isPost() && $resetPasswordForm->form->isValid()) {
+            if (!$resetPasswordForm->getResult($token)) {
+                $messages->addFlash("Impossible de changer le mot de passe !", 'danger');
                 return $this->redirect('forgotten');
             }
             $messages->addFlash("Votre nouveau mot de passe a bien été enregistré !", 'success');
             return $this->redirect('login');
         }
-        return $this->render('user/password.html.twig', [
+        return $this->render('user/reset.html.twig', [
             'token' => $token,
-            'form' => $form->getData()
+            'form' => $resetPasswordForm->form->getData()
         ]);
     }
 
@@ -148,36 +110,18 @@ class UserController extends Controller
     #[Route('/register', name: 'register')]
     public function register(
         FlashService $messages,
-        PasswordEncoder $encoder,
-        UserRepository $repository,
         Mail $mail,
-        Form $form
+        RegisterForm $registerForm
     ): ResponseInterface {
-        $requirements = [
-            'required' => ['email', 'username', 'password', 'passwordConfirm'],
-            'notEmpty' => ['email', 'username', 'password', 'passwordConfirm'],
-            'length' => ['password', null, 50],
-            'isEquals' => ['password', 'passwordConfirm'],
-        ];
-        if ($form->isPost() && $form->isValid($requirements)) {
-            try {
-                $user = new User();
-                $user->setUsername($form->getData('username'));
-                $user->setEmail($form->getData('email'));
-                $user->setPassword($encoder->encodePassword($form->getData('password')));
-                $user->setToken($encoder->createToken());
-                if (!$repository->addUser($user)) {
-                    throw new Exception("Unable to register user");
-                }
+        if ($registerForm->form->isPost() && $registerForm->form->isValid()) {
+            if ($user = $registerForm->getResult()) {
                 $mail->send($user->getEmail(), 'Création de compte', 'register', ['user' => $user]);
                 $messages->addFlash("Votre compte a bien été enregistré !", 'success');
                 return $this->redirect('login');
-            } catch (Exception $exception) {
-                $messages->addFlash($exception->getMessage(), 'danger');
             }
         }
         return $this->render('user/register.html.twig', [
-            'form' => $form->getData(),
+            'form' => $registerForm->form->getData(),
         ]);
     }
 
