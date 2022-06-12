@@ -1,0 +1,20 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Mot de passe perdu &middot; {{ parent() }}{% endblock %}
+
+{% block body %}
+
+    <h1>Mot de passe perdu</h1>
+    <div class="col-md-5 mx-auto my-5">
+        <form method="post" action="{{ path('forgotten') }}">
+            <div class="mb-3">
+                <label for="inputEmail" class="form-label">E-mail</label>
+                <input name="email" type="email" class="form-control" id="inputEmail" placeholder="nom@exemple.fr" value="{{ form.email ?? '' }}">
+            </div>
+            <div class="my-4">
+                <button type="submit" class="btn btn-secondary">Valider</button>
+            </div>
+        </form>
+    </div>
+
+{% endblock %}

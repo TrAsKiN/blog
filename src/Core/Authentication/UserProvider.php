@@ -41,6 +41,9 @@ class UserProvider
         if (!$user instanceof User) {
             throw new Exception("User does not exist!");
         }
+        if (!$user->isActive()) {
+            throw new Exception("User is not active!");
+        }
         if (!$this->encoder->isPasswordValid($user->getPassword(), $password)) {
             throw new Exception("Password is not correct!");
         }

@@ -3,63 +3,49 @@
 namespace Blog\Controller;
 
 use Blog\Core\Attribute\Route;
-use Blog\Core\Authentication\PasswordEncoder;
-use Blog\Core\Authentication\UserProvider;
 use Blog\Core\Controller;
-use Blog\Core\Form;
 use Blog\Core\Mail;
 use Blog\Core\Service\FlashService;
 use Blog\Core\Session;
 use Blog\Entity\User;
+use Blog\Form\ForgottenForm;
+use Blog\Form\LoginForm;
+use Blog\Form\RegisterForm;
+use Blog\Form\ResetPasswordForm;
 use Blog\Repository\UserRepository;
-use Exception;
 use InvalidArgumentException;
 use PDOException;
-use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
-use TypeError;
 
 class UserController extends Controller
 {
     /**
-     * @throws ContainerExceptionInterface
      * @throws InvalidArgumentException
      * @throws LoaderError
-     * @throws NotFoundExceptionInterface
      * @throws RuntimeError
      * @throws SyntaxError
      */
     #[Route('/login', name: 'login')]
     public function login(
         ServerRequestInterface $request,
-        UserProvider $provider,
-        FlashService $messages
+        FlashService $messages,
+        LoginForm $loginForm
     ): ResponseInterface {
         $session = $request->getAttribute(Session::class);
-        $form = $this->get(Form::class);
-        $requirements = [
-            'required' => ['email', 'password'],
-            'notEmpty' => ['email', 'password'],
-        ];
-        if ($form->isPost() && $form->isValid($requirements)) {
-            try {
-                $user = $provider->login($form->getData('email'), $form->getData('password'));
+        if ($loginForm->form->isPost() && $loginForm->form->isValid()) {
+            if ($user = $loginForm->getResult()) {
                 $session->set('username', $user->getUsername());
                 $session->set('token', $user->getToken());
                 $messages->addFlash("Vous êtes connecté !", 'success');
                 return $this->redirect('home');
-            } catch (Exception $exception) {
-                $messages->addFlash($exception->getMessage(), 'danger');
             }
         }
         return $this->render('user/login.html.twig', [
-            'form' => $form->getData(),
+            'form' => $loginForm->form->getData(),
         ]);
     }
 
@@ -68,60 +54,74 @@ class UserController extends Controller
      * @throws LoaderError
      * @throws RuntimeError
      * @throws SyntaxError
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
+     */
+    #[Route('/forgotten-password', name: 'forgotten')]
+    public function forgottenPassword(
+        FlashService $messages,
+        ForgottenForm $forgottenForm,
+        Mail $mail
+    ): ResponseInterface {
+        if ($forgottenForm->form->isPost() && $forgottenForm->form->isValid()) {
+            if ($user = $forgottenForm->getResult()) {
+                $mail->send($user->getEmail(), 'Mot de passe oublié', 'forgotten', ['user' => $user]);
+            }
+            $messages->addFlash(
+                "Si cette adresse est associé à un compte, vous allez recevoir un mail pour changer votre mot de passe",
+                'success'
+            );
+        }
+        return $this->render('user/forgotten.html.twig', [
+            'form' => $forgottenForm->form->getData(),
+        ]);
+    }
+
+    /**
+     * @throws InvalidArgumentException
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
+     */
+    #[Route('/reset-password/{token}', name: 'resetPassword')]
+    public function resetPassword(
+        string $token,
+        ResetPasswordForm $resetPasswordForm,
+        FlashService $messages
+    ): ResponseInterface {
+        if ($resetPasswordForm->form->isPost() && $resetPasswordForm->form->isValid()) {
+            if (!$resetPasswordForm->getResult($token)) {
+                $messages->addFlash("Impossible de changer le mot de passe !", 'danger');
+                return $this->redirect('forgotten');
+            }
+            $messages->addFlash("Votre nouveau mot de passe a bien été enregistré !", 'success');
+            return $this->redirect('login');
+        }
+        return $this->render('user/reset.html.twig', [
+            'token' => $token,
+            'form' => $resetPasswordForm->form->getData()
+        ]);
+    }
+
+    /**
+     * @throws InvalidArgumentException
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
      */
     #[Route('/register', name: 'register')]
     public function register(
-        ServerRequestInterface $request,
         FlashService $messages,
-        PasswordEncoder $encoder,
-        UserRepository $repository,
-        Mail $mail
+        Mail $mail,
+        RegisterForm $registerForm
     ): ResponseInterface {
-        $form = $this->get(Form::class);
-        $requirements = [
-            'required' => ['email', 'username', 'password', 'passwordConfirm'],
-            'notEmpty' => ['email', 'username', 'password', 'passwordConfirm'],
-            'length' => ['password', null, 50],
-            'isEquals' => ['password', 'passwordConfirm'],
-        ];
-        if ($form->isPost() && $form->isValid($requirements)) {
-            try {
-                $user = new User();
-                $user->setUsername($form->getData('username'));
-                $user->setEmail($form->getData('email'));
-                $user->setPassword($encoder->encodePassword($form->getData('password')));
-                $user->setActive(false);
-                $user->setToken($encoder->createToken());
-                if (!$repository->addUser($user)) {
-                    throw new Exception("Unable to register user");
-                }
-                try {
-                    $mail->send(
-                        'moi@traskin.net',
-                        $user->getEmail(),
-                        'Création de compte',
-                        [
-                            'html' => $this->twig->render('mail/register.html.twig', [
-                                'token' => $user->getToken()
-                            ]),
-                            'text' => $this->twig->render('mail/register.txt.twig', [
-                                'token' => $user->getToken()
-                            ]),
-                        ]
-                    );
-                } catch (TransportExceptionInterface|TypeError $exception) {
-                    $messages->addFlash($exception->getMessage(), 'danger');
-                }
+        if ($registerForm->form->isPost() && $registerForm->form->isValid()) {
+            if ($user = $registerForm->getResult()) {
+                $mail->send($user->getEmail(), 'Création de compte', 'register', ['user' => $user]);
                 $messages->addFlash("Votre compte a bien été enregistré !", 'success');
                 return $this->redirect('login');
-            } catch (Exception $exception) {
-                $messages->addFlash($exception->getMessage(), 'danger');
             }
         }
         return $this->render('user/register.html.twig', [
-            'form' => $form->getData(),
+            'form' => $registerForm->form->getData(),
         ]);
     }
 
@@ -132,7 +132,6 @@ class UserController extends Controller
     #[Route('/activate/{token}', name: 'activation')]
     public function activation(
         string $token,
-        ServerRequestInterface $request,
         UserRepository $repository,
         FlashService $messages
     ): ResponseInterface {
@@ -157,7 +156,8 @@ class UserController extends Controller
     public function logout(ServerRequestInterface $request): ResponseInterface
     {
         $session = $request->getAttribute(Session::class);
-        $session->erase();
+        $session->unset('username');
+        $session->unset('token');
         return $this->redirect('home');
     }
 }

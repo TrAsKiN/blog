@@ -9,6 +9,7 @@ use Psr\Http\Message\ServerRequestInterface;
 class Form
 {
     private readonly Validator $validator;
+    private array $requirements = [];
 
     public function __construct(
         private readonly ServerRequestInterface $request,
@@ -19,14 +20,19 @@ class Form
         }
     }
 
+    public function require(array $requirements): void
+    {
+        $this->requirements = $requirements;
+    }
+
     public function isPost(): bool
     {
         return $this->request->getMethod() === 'POST';
     }
 
-    public function isValid(array $requirements): bool
+    public function isValid(): bool
     {
-        foreach ($requirements as $requirement => $params) {
+        foreach ($this->requirements as $requirement => $params) {
             try {
                 call_user_func_array([$this->validator, $requirement], $params);
             } catch (Exception $exception) {

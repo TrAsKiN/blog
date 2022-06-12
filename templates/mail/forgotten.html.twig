@@ -1,0 +1,7 @@
+<h1>Mot de passe oublié</h1>
+<p>Bonjour {{ user }},</p>
+<p>
+    Une demande de changement de mot de passe pour votre compte sur le <a href="{{ url('home') }}">Blog de Simon</a> a été faite.
+    <br>
+    En vous rendant a cette adresse : <a href="{{ url('resetPassword', {'token': user.token}) }}">{{ url('resetPassword', {'token': user.token}) }}</a> vous pourrez définir un nouveau mot de passe.
+</p>

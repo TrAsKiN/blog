@@ -3,5 +3,5 @@
 <p>
     Votre compte sur le <a href="{{ url('home') }}">Blog de Simon</a> a bien été créé !
     <br>
-    Confirmez votre adresse en vous rendant a cette adresse : <a href="{{ url('activation', {'token': token}) }}">{{ url('activation', {'token': token}) }}</a>
+    Confirmez votre adresse en vous rendant a cette adresse : <a href="{{ url('activation', {'token': user.token}) }}">{{ url('activation', {'token': user.token}) }}</a>
 </p>
