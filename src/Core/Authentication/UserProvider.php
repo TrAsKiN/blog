@@ -21,9 +21,9 @@ class UserProvider
     /**
      * @throws PDOException
      */
-    public function retrieve(string $username): User|bool
+    public function retrieve(string $token): User|bool
     {
-        $user = $this->userRepository->findByUsername($username);
+        $user = $this->userRepository->findByToken($token);
         if (!$user instanceof User) {
             return false;
         }

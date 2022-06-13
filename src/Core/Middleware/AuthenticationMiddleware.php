@@ -24,18 +24,16 @@ class AuthenticationMiddleware implements MiddlewareInterface
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $session = $request->getAttribute(Session::class);
-        if (!$session->get('username')) {
+        if (!$session->get('token')) {
             return $handler->handle($request);
         }
-        $user = $this->provider->retrieve($session->get('username'));
+        $user = $this->provider->retrieve($session->get('token'));
         if (!$user instanceof User) {
             throw new Exception(
-                sprintf("Username '%s' does not exists!", $this->provider->getUser())
+                sprintf("No user match with token '%s'!", $session->get('token'))
             );
         }
-        if ($user->getToken() === $session->get('token')) {
-            $this->provider->setAuthenticated(true);
-        }
+        $this->provider->setAuthenticated(true);
         return $handler->handle($request);
     }
 }

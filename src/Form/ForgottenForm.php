@@ -4,13 +4,14 @@ namespace Blog\Form;
 
 use Blog\Core\Authentication\PasswordEncoder;
 use Blog\Core\Form;
+use Blog\Core\FormInterface;
 use Blog\Core\Service\FlashService;
 use Blog\Entity\User;
 use Blog\Repository\UserRepository;
 use Exception;
 use PDOException;
 
-class ForgottenForm
+class ForgottenForm implements FormInterface
 {
     public function __construct(
         public readonly Form $form,
@@ -24,7 +25,7 @@ class ForgottenForm
         ]);
     }
 
-    public function getResult(): ?User
+    public function getResult(mixed $params = null): ?User
     {
         try {
             $user = $this->repository->findByEmail($this->form->getData('email'));
