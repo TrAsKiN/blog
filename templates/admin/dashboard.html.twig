@@ -1,0 +1,21 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Tableau de bord &middot; {{ parent() }}{% endblock %}
+
+{% block body %}
+
+    <h1>Tableau de bord</h1>
+    <div class="d-flex gap-2 col-8 mx-auto">
+        <div class="col-4 text-end pt-2">
+            Liste des actions disponible
+        </div>
+        <div class="list-group col">
+            <a href="{{ path('admin_comments') }}" class="list-group-item list-group-item-action">
+                Gestion des commentaires à valider
+                <span class="badge text-bg-dark rounded-pill">{{ comments|length }}</span>
+            </a>
+            <a class="list-group-item list-group-item-action disabled">Gestion des articles</a>
+        </div>
+    </div>
+
+{% endblock %}

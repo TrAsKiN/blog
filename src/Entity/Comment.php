@@ -13,6 +13,7 @@ class Comment extends Entity
     private ?DateTime $createdAt;
     private bool $valid = false;
     private int|User $author;
+    private int|Post $post;
 
     public function getId(): int
     {
@@ -65,5 +66,15 @@ class Comment extends Entity
     public function setAuthor(User|int $author): void
     {
         $this->author = $author;
+    }
+
+    public function getPost(): int|Post
+    {
+        return $this->post;
+    }
+
+    public function setPost(int|Post $post): void
+    {
+        $this->post = $post;
     }
 }
