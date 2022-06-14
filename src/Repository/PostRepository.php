@@ -18,23 +18,12 @@ class PostRepository extends Database
     {
         $offset = $max * ($page - 1);
         $postsStatement = $this->pdo->prepare(
-            "SELECT * FROM `posts` LIMIT $max OFFSET $offset"
+            "SELECT * FROM `posts` ORDER BY `created_at` DESC LIMIT $max OFFSET $offset"
         );
         $postsStatement->execute();
         $posts = $postsStatement->fetchAll(PDO::FETCH_CLASS, Post::class);
         foreach ($posts as $post) {
-            $authorStatement = $this->pdo->prepare(
-                'SELECT * FROM `users` WHERE `id` = :author'
-            );
-            $authorStatement->execute([
-                'author' => $post->getAuthor(),
-            ]);
-            $post->setAuthor($authorStatement->fetchObject(User::class));
-            $commentsStatement = $this->pdo->prepare('SELECT * FROM `comments` WHERE `post` = :post');
-            $commentsStatement->execute([
-                'post' => $post->getId(),
-            ]);
-            $post->setComments(count($commentsStatement->fetchAll(PDO::FETCH_CLASS, Comment::class)));
+            $this->setAuthorAndComments($post);
         }
         return $posts;
     }
@@ -49,6 +38,15 @@ class PostRepository extends Database
             'slug' => $slug,
         ]);
         $post = $postStatement->fetchObject(Post::class);
+        $this->setAuthorAndComments($post);
+        return $post;
+    }
+
+    /**
+     * @throws PDOException
+     */
+    private function setAuthorAndComments(Post $post): void
+    {
         $authorStatement = $this->pdo->prepare(
             'SELECT * FROM `users` WHERE `id` = :author'
         );
@@ -56,7 +54,9 @@ class PostRepository extends Database
             'author' => $post->getAuthor(),
         ]);
         $post->setAuthor($authorStatement->fetchObject(User::class));
-        $commentsStatement = $this->pdo->prepare('SELECT * FROM `comments` WHERE `post` = :post');
+        $commentsStatement = $this->pdo->prepare(
+            'SELECT * FROM `comments` WHERE `post` = :post AND `valid` = 1 ORDER BY `created_at` DESC'
+        );
         $commentsStatement->execute([
             'post' => $post->getId(),
         ]);
@@ -71,6 +71,5 @@ class PostRepository extends Database
             $comment->setAuthor($commentAuthorStatement->fetchObject(User::class));
         }
         $post->setComments($comments);
-        return $post;
     }
 }

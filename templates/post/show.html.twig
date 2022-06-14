@@ -24,8 +24,19 @@
         {% for comment in post.comments %}
         {% include 'post/_comment.html.twig' with {'comment': comment} %}
         {% else %}
-        <p class="text-secondary fst-italic">Aucun commentaire sur cet article pour le moment.</p>
+        <p class="text-center text-secondary fst-italic">Aucun commentaire sur cet article pour le moment.</p>
         {% endfor %}
+        {% if isAuthenticated() %}
+        <form action="{{ path('comment_add', {'slug': post.slug}) }}" method="post" class="mt-5">
+            <div class="my-3">
+                <label for="commentTextarea" class="form-label">Laisser un commentaire</label>
+                <textarea name="content" class="form-control" id="commentTextarea" rows="5" placeholder="Commentaire"></textarea>
+            </div>
+            <div class="text-end">
+                <button type="submit" class="btn btn-secondary">Envoyer</button>
+            </div>
+        </form>
+        {% endif %}
     </aside>
 
 {% endblock %}
