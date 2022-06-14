@@ -4,13 +4,14 @@ namespace Blog\Form;
 
 use Blog\Core\Authentication\PasswordEncoder;
 use Blog\Core\Form;
+use Blog\Core\FormInterface;
 use Blog\Core\Service\FlashService;
 use Blog\Entity\User;
 use Blog\Repository\UserRepository;
 use Exception;
 use PDOException;
 
-class ResetPasswordForm
+class ResetPasswordForm implements FormInterface
 {
     public function __construct(
         public readonly Form $form,
@@ -26,10 +27,10 @@ class ResetPasswordForm
         ]);
     }
 
-    public function getResult(string $token): ?User
+    public function getResult(mixed $params = null): ?User
     {
         try {
-            $user = $this->repository->findByToken($token);
+            $user = $this->repository->findByToken($params);
             if (!$user instanceof User) {
                 throw new Exception("Aucune correspondance avec un utilisateur enregistré !");
             }

@@ -38,7 +38,6 @@ class UserController extends Controller
         $session = $request->getAttribute(Session::class);
         if ($loginForm->form->isPost() && $loginForm->form->isValid()) {
             if ($user = $loginForm->getResult()) {
-                $session->set('username', $user->getUsername());
                 $session->set('token', $user->getToken());
                 $messages->addFlash("Vous êtes connecté !", 'success');
                 return $this->redirect('home');
@@ -156,7 +155,6 @@ class UserController extends Controller
     public function logout(ServerRequestInterface $request): ResponseInterface
     {
         $session = $request->getAttribute(Session::class);
-        $session->unset('username');
         $session->unset('token');
         return $this->redirect('home');
     }
