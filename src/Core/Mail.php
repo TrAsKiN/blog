@@ -2,13 +2,11 @@
 
 namespace Blog\Core;
 
+use Exception;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\Mailer;
 use Symfony\Component\Mime\Email;
 use Twig\Environment;
-use Twig\Error\LoaderError;
-use Twig\Error\RuntimeError;
-use Twig\Error\SyntaxError;
 use TypeError;
 
 class Mail
@@ -19,6 +17,10 @@ class Mail
     ) {
     }
 
+    /**
+     * @throws TypeError
+     * @throws TransportExceptionInterface
+     */
     public function send(string $to, string $subject, string $template, array $params = []): void
     {
         try {
@@ -30,8 +32,7 @@ class Mail
                 ->html($this->twig->render(sprintf('mail/%s.html.twig', $template), $params))
             ;
             $this->mailer->send($email);
-        } catch (TransportExceptionInterface|TypeError|LoaderError|RuntimeError|SyntaxError $exception) {
-            $exception->getMessage();
+        } catch (Exception $exception) {
         }
     }
 }

@@ -9,7 +9,6 @@ use Blog\Core\Service\FlashService;
 use Blog\Entity\User;
 use Blog\Repository\UserRepository;
 use Exception;
-use PDOException;
 
 class ForgottenForm implements FormInterface
 {
@@ -38,7 +37,7 @@ class ForgottenForm implements FormInterface
                 'success'
             );
             return $user;
-        } catch (PDOException|Exception $exception) {
+        } catch (Exception $exception) {
             $this->messages->addFlash($exception->getMessage(), 'danger');
             return null;
         }
