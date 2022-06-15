@@ -1,0 +1,18 @@
+<form action="{{ url }}" method="post">
+    <div class="mb-3">
+        <label for="titleInput" class="form-label">Titre</label>
+        <input type="text" name="title" class="form-control" id="titleInput" value="{{ post.title|default('') }}">
+    </div>
+    <div class="mb-3">
+        <label for="ledeTextarea" class="form-label">Chapô</label>
+        <textarea name="lede" class="form-control" id="ledeTextarea" rows="3">{{ post.lede|default('') }}</textarea>
+    </div>
+    <div class="mb-3">
+        <label for="contentTextarea" class="form-label">Contenu</label>
+        <textarea name="content" class="form-control" id="contentTextarea" rows="15">{{ post.content|default('') }}</textarea>
+    </div>
+    <div class="d-flex justify-content-between">
+        <button type="submit" class="btn btn-secondary">Enregistrer</button>
+        <a href="{{ path('admin_blog_list') }}" class="btn btn-outline-secondary">Retour à la liste</a>
+    </div>
+</form>

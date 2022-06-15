@@ -86,7 +86,8 @@ class Post extends Entity
 
     public function setSlug(string $slug): void
     {
-        $this->slug = $slug;
+
+            $this->slug = $slug;
     }
 
     public function getAuthor(): User|int
