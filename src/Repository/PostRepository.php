@@ -122,10 +122,11 @@ class PostRepository extends Database
         ]);
         $post->setAuthor($authorStatement->fetchObject(User::class));
         $commentsStatement = $this->pdo->prepare(
-            'SELECT * FROM `comments` WHERE `post` = :post AND `valid` = 1 ORDER BY `created_at` DESC'
+            'SELECT * FROM `comments` WHERE `post` = :post AND `valid` = :valid ORDER BY `created_at` DESC'
         );
         $commentsStatement->execute([
             'post' => $post->getId(),
+            'valid' => Comment::VALIDATED,
         ]);
         $comments = $commentsStatement->fetchAll(PDO::FETCH_CLASS, Comment::class);
         foreach ($comments as $comment) {

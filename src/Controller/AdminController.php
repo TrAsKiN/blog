@@ -5,6 +5,7 @@ namespace Blog\Controller;
 use Blog\Core\Attribute\Route;
 use Blog\Core\Controller;
 use Blog\Core\Service\FlashService;
+use Blog\Entity\Comment;
 use Blog\Repository\CommentRepository;
 use InvalidArgumentException;
 use PDOException;
@@ -56,7 +57,7 @@ class AdminController extends Controller
         FlashService $messages
     ): ResponseInterface {
         $comment = $commentRepository->find($id);
-        $comment->setValid(true);
+        $comment->setValid(Comment::VALIDATED);
         if ($commentRepository->updateComment($comment)) {
             $messages->addFlash("Commentaire validé !", 'success');
         }
