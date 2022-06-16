@@ -50,7 +50,7 @@ class AdminController extends Controller
      * @throws InvalidArgumentException
      * @throws PDOException
      */
-    #[Route('/admin/blog/comment/{id}', name: 'comment_valid', roles: ['admin'], restricted: true)]
+    #[Route('/admin/comment/valid/{id}', name: 'comment_valid', roles: ['admin'], restricted: true)]
     public function validComment(
         int $id,
         CommentRepository $commentRepository,
@@ -60,6 +60,24 @@ class AdminController extends Controller
         $comment->setValid(Comment::VALIDATED);
         if ($commentRepository->updateComment($comment)) {
             $messages->addFlash("Commentaire validé !", 'success');
+        }
+        return $this->redirect('admin_comments');
+    }
+
+    /**
+     * @throws InvalidArgumentException
+     * @throws PDOException
+     */
+    #[Route('/admin/comment/invalid/{id}', name: 'comment_invalid', roles: ['admin'], restricted: true)]
+    public function invalidComment(
+        int $id,
+        CommentRepository $commentRepository,
+        FlashService $messages
+    ): ResponseInterface {
+        $comment = $commentRepository->find($id);
+        $comment->setValid(Comment::DELETED);
+        if ($commentRepository->updateComment($comment)) {
+            $messages->addFlash("Commentaire supprimé !", 'success');
         }
         return $this->redirect('admin_comments');
     }
