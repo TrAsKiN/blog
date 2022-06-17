@@ -33,9 +33,11 @@ class CommentRepository extends Database
     public function getCommentsToValidate(): bool|array
     {
         $commentsStatement = $this->pdo->prepare(
-            'SELECT * FROM `comments` WHERE `valid` = 0 ORDER BY `created_at`'
+            'SELECT * FROM `comments` WHERE `valid` = :valid ORDER BY `created_at`'
         );
-        $commentsStatement->execute();
+        $commentsStatement->execute([
+            'valid' => Comment::PENDING,
+        ]);
         $comments = $commentsStatement->fetchAll(PDO::FETCH_CLASS, Comment::class);
         foreach ($comments as $comment) {
             $this->setAuthorAndPost($comment);
@@ -56,7 +58,7 @@ class CommentRepository extends Database
         );
         return $statement->execute([
             'content' => $comment->getContent(),
-            'valid' => $comment->isValid(),
+            'valid' => $comment->getValid(),
             'id' => $comment->getId(),
         ]);
     }

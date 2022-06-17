@@ -14,9 +14,9 @@
         <thead>
             <tr>
                 <th scope="col" class="col-2">Article</th>
-                <th scope="col" class="col-9">Commentaire</th>
+                <th scope="col" class="col-8">Commentaire</th>
                 <th scope="col" class="col-1">Auteur</th>
-                <th scope="col" class="col"></th>
+                <th scope="col" class="col-1"></th>
             </tr>
         </thead>
         <tbody>
@@ -25,7 +25,10 @@
                 <td>{{ comment.post.title }}</td>
                 <td>{{ comment.content }}</td>
                 <td>{{ comment.author }}</td>
-                <td><a class="link-success" href="{{ path('comment_valid', {'id': comment.id}) }}"><i class="bi bi-check2-circle"></i></a></td>
+                <td class="text-end">
+                    <a class="link-success p-1" href="{{ path('comment_valid', {'id': comment.id}) }}"><i class="bi bi-check-circle"></i></a>
+                    <a class="link-danger p-1" href="{{ path('comment_invalid', {'id': comment.id}) }}"><i class="bi bi-dash-circle"></i></a>
+                </td>
             </tr>
             {% else %}
             <tr>

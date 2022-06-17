@@ -2,10 +2,13 @@
 
 namespace Blog\Core\Authentication;
 
+use Blog\Core\TokenTrait;
 use Exception;
 
 class PasswordEncoder
 {
+    use TokenTrait;
+
     public function __construct(
         private readonly int $cost = 10,
         private readonly int $maxLength = 50
@@ -26,14 +29,5 @@ class PasswordEncoder
     public function isPasswordValid(string $encodedPassword, string $rawPassword): bool
     {
         return password_verify($rawPassword, $encodedPassword);
-    }
-
-    /**
-     * @throws Exception
-     */
-    public function createToken(int $length = 40): string
-    {
-        $length = (int) floor($length / 2);
-        return bin2hex(random_bytes($length));
     }
 }

@@ -8,7 +8,6 @@ use Blog\Core\FormInterface;
 use Blog\Core\Service\FlashService;
 use Blog\Entity\User;
 use Exception;
-use PDOException;
 
 class LoginForm implements FormInterface
 {
@@ -30,7 +29,7 @@ class LoginForm implements FormInterface
                 $this->form->getData('email'),
                 $this->form->getData('password')
             );
-        } catch (PDOException|Exception $exception) {
+        } catch (Exception $exception) {
             $this->messages->addFlash($exception->getMessage(), 'danger');
             return null;
         }

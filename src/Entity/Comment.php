@@ -8,10 +8,14 @@ use Exception;
 
 class Comment extends Entity
 {
+    public const PENDING = 0;
+    public const VALIDATED = 1;
+    public const DELETED = 2;
+
     private int $id;
     private string $content;
     private ?DateTime $createdAt;
-    private bool $valid = false;
+    private int $valid = self::PENDING;
     private int|User $author;
     private int|Post $post;
 
@@ -48,12 +52,12 @@ class Comment extends Entity
         $this->createdAt = new DateTime($createdAt);
     }
 
-    public function isValid(): bool
+    public function getValid(): int
     {
         return $this->valid;
     }
 
-    public function setValid(bool $valid): void
+    public function setValid(int $valid): void
     {
         $this->valid = $valid;
     }

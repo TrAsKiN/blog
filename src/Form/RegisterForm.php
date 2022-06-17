@@ -9,7 +9,6 @@ use Blog\Core\Service\FlashService;
 use Blog\Entity\User;
 use Blog\Repository\UserRepository;
 use Exception;
-use PDOException;
 
 class RegisterForm implements FormInterface
 {
@@ -39,7 +38,7 @@ class RegisterForm implements FormInterface
                 throw new Exception("Unable to register user");
             }
             return $user;
-        } catch (PDOException|Exception $exception) {
+        } catch (Exception $exception) {
             $this->messages->addFlash($exception->getMessage(), 'danger');
             return null;
         }

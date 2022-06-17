@@ -1,0 +1,12 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Créer un article &middot; {{ parent() }}{% endblock %}
+
+{% block body %}
+
+    <h1>Rédiger un article</h1>
+    {% include 'admin/_post.html.twig' with {
+        'url': path('admin_blog_new')
+    } %}
+
+{% endblock %}
