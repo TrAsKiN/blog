@@ -4,9 +4,11 @@
 
 {% block body %}
 
-    <h1>Rédiger un article</h1>
-    {% include 'admin/_post.html.twig' with {
-        'url': path('admin_blog_new')
-    } %}
+    <div class="container">
+        <h1>Rédiger un article</h1>
+        {% include 'admin/_post.html.twig' with {
+            'url': path('admin_blog_new')
+        } %}
+    </div>
 
 {% endblock %}

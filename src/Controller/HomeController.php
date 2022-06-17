@@ -24,7 +24,7 @@ class HomeController extends Controller
     #[Route('/', name: 'home')]
     public function home(PostRepository $postRepository): ResponseInterface
     {
-        $posts = $postRepository->getPaginatedList(1, 3);
+        $posts = $postRepository->getPaginatedList(1, 1);
         return $this->render('home/home.html.twig', compact('posts'));
     }
 }
