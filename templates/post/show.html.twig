@@ -4,39 +4,41 @@
 
 {% block body %}
 
-    <article class="blog-post">
-        <h1 class="blog-post-title mb-1">{{ post.title }}</h1>
-        <p class="blog-post-meta">
-            Écrit par {{ post.author }} le {{ post.createdAt|date("d/m/Y") }}
-            {% if post.createdAt != post.updatedAt %}
-            <small class="fst-italic">
-                (dernière modification le {{ post.updatedAt|date("d/m/Y") }})
-            </small>
+    <div class="container">
+        <article class="mb-5">
+            <h1 class="blog-post-title mb-1">{{ post.title }}</h1>
+            <p class="blog-post-meta">
+                Écrit par {{ post.author }} le {{ post.createdAt|date("d/m/Y") }}
+                {% if post.createdAt != post.updatedAt %}
+                <small class="fst-italic">
+                    (dernière modification le {{ post.updatedAt|date("d/m/Y") }})
+                </small>
+                {% endif %}
+            </p>
+            <div class="text-justify">
+                <p class="lead">{{ post.lede|nl2br }}</p>
+                <p>{{ post.content|nl2br }}</p>
+            </div>
+        </article>
+        <aside>
+            <h2 class="h5">Commentaire(s)</h2>
+            {% for comment in post.comments %}
+            {% include 'post/_comment.html.twig' with {'comment': comment} %}
+            {% else %}
+            <p class="text-center text-secondary fst-italic">Aucun commentaire sur cet article pour le moment.</p>
+            {% endfor %}
+            {% if isAuthenticated() %}
+            <form action="{{ path('comment_add', {'slug': post.slug}) }}" method="post" class="mt-5">
+                <div class="my-3">
+                    <label for="commentTextarea" class="form-label">Laisser un commentaire</label>
+                    <textarea name="content" class="form-control" id="commentTextarea" rows="5" placeholder="Commentaire"></textarea>
+                </div>
+                <div class="text-end">
+                    <button type="submit" class="btn btn-secondary">Envoyer</button>
+                </div>
+            </form>
             {% endif %}
-        </p>
-        <div class="text-justify">
-            <p class="lead">{{ post.lede|nl2br }}</p>
-            <p>{{ post.content|nl2br }}</p>
-        </div>
-    </article>
-    <aside>
-        <h2 class="h5">Commentaire(s)</h2>
-        {% for comment in post.comments %}
-        {% include 'post/_comment.html.twig' with {'comment': comment} %}
-        {% else %}
-        <p class="text-center text-secondary fst-italic">Aucun commentaire sur cet article pour le moment.</p>
-        {% endfor %}
-        {% if isAuthenticated() %}
-        <form action="{{ path('comment_add', {'slug': post.slug}) }}" method="post" class="mt-5">
-            <div class="my-3">
-                <label for="commentTextarea" class="form-label">Laisser un commentaire</label>
-                <textarea name="content" class="form-control" id="commentTextarea" rows="5" placeholder="Commentaire"></textarea>
-            </div>
-            <div class="text-end">
-                <button type="submit" class="btn btn-secondary">Envoyer</button>
-            </div>
-        </form>
-        {% endif %}
-    </aside>
+        </aside>
+    </div>
 
 {% endblock %}
