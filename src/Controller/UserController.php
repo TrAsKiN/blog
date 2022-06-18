@@ -17,9 +17,11 @@ use InvalidArgumentException;
 use PDOException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
+use TypeError;
 
 class UserController extends Controller
 {
@@ -53,6 +55,8 @@ class UserController extends Controller
      * @throws LoaderError
      * @throws RuntimeError
      * @throws SyntaxError
+     * @throws TransportExceptionInterface
+     * @throws TypeError
      */
     #[Route('/forgotten-password', name: 'forgotten')]
     public function forgottenPassword(
@@ -105,6 +109,8 @@ class UserController extends Controller
      * @throws LoaderError
      * @throws RuntimeError
      * @throws SyntaxError
+     * @throws TransportExceptionInterface
+     * @throws TypeError
      */
     #[Route('/register', name: 'register')]
     public function register(

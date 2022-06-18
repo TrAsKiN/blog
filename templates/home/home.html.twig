@@ -59,11 +59,14 @@
             <form action="{{ path('contact') }}" method="post" class="col-md-8">
                 <div class="mb-3">
                     <label for="emailInput" class="form-label">Votre adresse email</label>
-                    <input type="email" class="form-control" id="emailInput" placeholder="nom@exemple.fr">
+                    <input type="email" name="email" class="form-control" id="emailInput" placeholder="nom@exemple.fr">
                 </div>
                 <div class="mb-3">
                     <label for="messageTextarea" class="form-label">Votre message</label>
-                    <textarea class="form-control" id="messageTextarea" rows="3" placeholder="Votre message"></textarea>
+                    <div class="input-group">
+                        <textarea name="message" class="form-control" id="messageTextarea" rows="3" placeholder="Votre message"></textarea>
+                        <button type="submit" class="btn btn-secondary">Envoyer</button>
+                    </div>
                 </div>
             </form>
         </div>
