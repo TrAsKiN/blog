@@ -6,7 +6,7 @@
 
     {% include 'home/_featured.html.twig' %}
     <div class="container">
-        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 mt-2 mb-5">
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-xl-4 g-4 mt-2 mb-5">
             <div class="col d-flex align-items-start">
                 <i class="bi bi-award text-muted flex-shrink-0 me-3 fs-3"></i>
                 <div class="pt-1">
@@ -38,25 +38,33 @@
         </div>
         <div class="row mb-4">
             <h2 class="blog-caption h4">Blog</h2>
-            <div class="col-md-8">
+            <div class="col-lg-8">
                 {% for post in posts %}
                 {% include 'home/_post.html.twig' with {'post': post} %}
                 {% else %}
                 <p class="text-secondary fst-italic">Aucun article</p>
                 {% endfor %}
             </div>
-            {% include 'home/_about.html.twig' %}
+            <div class="col-lg-4 mt-2">
+                <div class="d-grid mb-3">
+                    <a href="{{ path('blog', {'page': 1}) }}" class="btn btn-secondary">Liste des articles</a>
+                </div>
+                <div class="p-4 bg-secondary bg-opacity-10 rounded">
+                    <h4 class="fst-italic">À propos du blog</h4>
+                    <p class="mb-0 text-justify">Sur ce blog, j'essaie de partager ma passion pour les nouvelles technologies. Il me sert aussi de bloc note pour ne pas oublier et aussi pour apprendre.</p>
+                </div>
+            </div>
         </div>
         <div id="contact" class="row mb-4">
             <h2 class="blog-caption mb-3">Contactez moi</h2>
-            <div class="col-md-4">
+            <div class="col-lg-4 mb-2 mb-lg-0">
                 <h3 class="h5 ps-2">Informations</h3>
                 <div class="p-4 bg-secondary bg-opacity-10 rounded">
                     <p>N'hésitez pas à privilégier les réseaux sociaux pour obtenir une réponse rapide ou pour simplement échanger.</p>
                     <p>Délais de réponse : ~72 heures</p>
                 </div>
             </div>
-            <form action="{{ path('contact') }}" method="post" class="col-md-8">
+            <form action="{{ path('contact') }}" method="post" class="col-lg-8">
                 <div class="mb-3">
                     <label for="emailInput" class="form-label">Votre adresse email</label>
                     <input type="email" name="email" class="form-control" id="emailInput" placeholder="nom@exemple.fr">
