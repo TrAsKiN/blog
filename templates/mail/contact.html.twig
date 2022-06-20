@@ -1,5 +1,5 @@
 <h1>Nouveau message</h1>
-<p>Vous avez reçu un message de la part de {{ form.email }}</p>
+<p>Vous avez reçu un message de la part de <a href="mailto:{{ form.email }}">{{ form.email }}</a> :</p>
 <p>
     {{ form.message|nl2br }}
 </p>

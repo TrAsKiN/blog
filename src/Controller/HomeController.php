@@ -46,7 +46,7 @@ class HomeController extends Controller
     ): ResponseInterface {
         if ($contactForm->form->isPost() && $contactForm->form->isValid()) {
             if ($formValues = $contactForm->getResult()) {
-                $mail->send('marchal.simon@gmail.com', "Nouveau message !", 'contact', ['form', $formValues]);
+                $mail->send('marchal.simon@gmail.com', "Nouveau message !", 'contact', ['form' => $formValues]);
                 $messages->addFlash("Votre message a été envoyé !", 'success');
             }
         }

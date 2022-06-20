@@ -2,6 +2,7 @@
 
 namespace Blog\Core;
 
+use Blog\Core\Service\FlashService;
 use Exception;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\Mailer;
@@ -13,7 +14,8 @@ class Mail
 {
     public function __construct(
         private readonly Mailer $mailer,
-        private readonly Environment $twig
+        private readonly Environment $twig,
+        private readonly FlashService $messages
     ) {
     }
 
@@ -33,6 +35,7 @@ class Mail
             ;
             $this->mailer->send($email);
         } catch (Exception $exception) {
+            $this->messages->addFlash($exception->getMessage(), 'warning');
         }
     }
 }
