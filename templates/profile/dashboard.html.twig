@@ -8,6 +8,7 @@
         <h1>Modifier mes informations</h1>
         <div class="col-lg-8 col-xl-6 mx-auto my-5">
             <form action="{{ path('profile_update') }}" method="post">
+                <input type="hidden" name="_csrf" value="{{ token }}">
                 <div class="mb-3">
                     <label for="usernameInput" class="form-label">Changer le nom d'utilisateur</label>
                     <input type="text" name="username" class="form-control" id="usernameInput" placeholder="{{ isAuthenticated() ? user() }}">

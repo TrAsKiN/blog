@@ -4,6 +4,7 @@ namespace Blog\Controller;
 
 use Blog\Core\Attribute\Route;
 use Blog\Core\Controller;
+use Blog\Core\Csrf;
 use Blog\Core\Form;
 use Blog\Core\Service\FlashService;
 use Blog\Entity\Post;
@@ -27,13 +28,16 @@ class CrudController extends Controller
      * @throws RuntimeError
      * @throws PDOException
      * @throws LoaderError
+     * @throws Exception
      */
     #[Route('/admin/blog/list', name: 'admin_blog_list', roles: ['admin'], restricted: true)]
     public function list(
-        PostRepository $repository
+        PostRepository $repository,
+        Csrf $csrf
     ): ResponseInterface {
         $posts = $repository->getPaginatedList(1);
-        return $this->render('admin/list.html.twig', compact('posts'));
+        $token = $csrf->new();
+        return $this->render('admin/list.html.twig', compact('posts', 'token'));
     }
 
     /**
@@ -42,13 +46,15 @@ class CrudController extends Controller
      * @throws RuntimeError
      * @throws PDOException
      * @throws LoaderError
+     * @throws Exception
      */
     #[Route('/admin/blog/edit/{id}', name: 'admin_blog_edit', roles: ['admin'], restricted: true)]
     public function edit(
         int $id,
         PostRepository $repository,
         PostForm $postForm,
-        FlashService $messages
+        FlashService $messages,
+        Csrf $csrf
     ): ResponseInterface {
         $post = $repository->find($id);
         if ($postForm->form->isPost() && $postForm->form->isValid()) {
@@ -56,12 +62,14 @@ class CrudController extends Controller
                 $messages->addFlash("Article mis à jour !", 'success');
             }
         }
-        return $this->render('admin/edit.html.twig', compact('post'));
+        $token = $csrf->new();
+        return $this->render('admin/edit.html.twig', compact('post', 'token'));
     }
 
     /**
      * @throws InvalidArgumentException
      * @throws PDOException
+     * @throws Exception
      */
     #[Route('/admin/blog/delete/{id}', name: 'admin_blog_delete', roles: ['admin'], restricted: true)]
     public function delete(
@@ -87,11 +95,13 @@ class CrudController extends Controller
      * @throws InvalidArgumentException
      * @throws RuntimeError
      * @throws LoaderError
+     * @throws Exception
      */
     #[Route('/admin/blog/new', name: 'admin_blog_new', roles: ['admin'], restricted: true)]
     public function new(
         PostForm $postForm,
-        FlashService $messages
+        FlashService $messages,
+        Csrf $csrf
     ): ResponseInterface {
         if ($postForm->form->isPost() && $postForm->form->isValid()) {
             if ($postForm->getResult()) {
@@ -99,6 +109,7 @@ class CrudController extends Controller
                 return $this->redirect('admin_blog_list');
             }
         }
-        return $this->render('admin/new.html.twig');
+        $token = $csrf->new();
+        return $this->render('admin/new.html.twig', compact('token'));
     }
 }

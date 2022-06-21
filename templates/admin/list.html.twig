@@ -24,6 +24,7 @@
                     <td class="p-1 text-end">
                         <a href="{{ path('admin_blog_edit', {'id': post.id}) }}" class="px-2 py-1 btn btn-link link-secondary" title="Modifier"><i class="bi bi-pen"></i></a>
                         <form action="{{ path('admin_blog_delete', {'id': post.id}) }}" method="post" class="d-inline-block">
+                            <input type="hidden" name="_csrf" value="{{ token }}">
                             <button type="submit" class="btn btn-link link-secondary px-2 py-1" title="Supprimer"><i class="bi bi-eraser"></i></button>
                         </form>
                     </td>

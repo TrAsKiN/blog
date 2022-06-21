@@ -4,7 +4,9 @@ namespace Blog\Controller;
 
 use Blog\Core\Attribute\Route;
 use Blog\Core\Controller;
+use Blog\Core\Csrf;
 use Blog\Repository\PostRepository;
+use Exception;
 use InvalidArgumentException;
 use PDOException;
 use Psr\Http\Message\ResponseInterface;
@@ -20,11 +22,16 @@ class PostController extends Controller
      * @throws LoaderError
      * @throws PDOException
      * @throws InvalidArgumentException
+     * @throws Exception
      */
     #[Route('/blog/post/{slug}', name: 'post')]
-    public function index(string $slug, PostRepository $postRepository): ResponseInterface
-    {
+    public function index(
+        string $slug,
+        PostRepository $postRepository,
+        Csrf $csrf
+    ): ResponseInterface {
         $post = $postRepository->findWithSlug($slug);
-        return $this->render('post/show.html.twig', compact('post'));
+        $token = $csrf->new();
+        return $this->render('post/show.html.twig', compact('post', 'token'));
     }
 }

@@ -8,6 +8,7 @@
         <h1>Création de compte</h1>
         <div class="col-lg-8 col-xl-6 mx-auto my-5">
             <form method="post" action="{{ path('register') }}">
+                <input type="hidden" name="_csrf" value="{{ token }}">
                 <div class="mb-4">
                     <div class="row">
                         <div class="col-md mb-4 mb-md-0">

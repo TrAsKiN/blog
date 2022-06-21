@@ -13,7 +13,8 @@ class Form
 
     public function __construct(
         private readonly ServerRequestInterface $request,
-        private readonly FlashService $messages
+        private readonly FlashService $messages,
+        private readonly Csrf $csrf
     ) {
         if ($this->isPost()) {
             $this->validator = new Validator($this->request->getParsedBody());
@@ -30,6 +31,9 @@ class Form
         return $this->request->getMethod() === 'POST';
     }
 
+    /**
+     * @throws Exception
+     */
     public function isValid(): bool
     {
         foreach ($this->requirements as $requirement => $params) {
@@ -39,6 +43,9 @@ class Form
                 $this->messages->addFlash($exception->getMessage(), 'warning');
                 return false;
             }
+        }
+        if (!$this->csrf->exist($this->getData(Csrf::KEY))) {
+            throw new Exception("Invalid CSRF token!");
         }
         return true;
     }

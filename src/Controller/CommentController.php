@@ -6,6 +6,7 @@ use Blog\Core\Attribute\Route;
 use Blog\Core\Controller;
 use Blog\Core\Service\FlashService;
 use Blog\Form\CommentForm;
+use Exception;
 use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
 
@@ -13,6 +14,7 @@ class CommentController extends Controller
 {
     /**
      * @throws InvalidArgumentException
+     * @throws Exception
      */
     #[Route('/blog/post/comment/{slug}', name: 'comment_add', restricted: true)]
     public function commentAdd(
