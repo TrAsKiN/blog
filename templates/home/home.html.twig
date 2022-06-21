@@ -65,6 +65,7 @@
                 </div>
             </div>
             <form action="{{ path('contact') }}" method="post" class="col-lg-8">
+                <input type="hidden" name="_csrf" value="{{ token }}">
                 <div class="mb-3">
                     <label for="emailInput" class="form-label">Votre adresse email</label>
                     <input type="email" name="email" class="form-control" id="emailInput" placeholder="nom@exemple.fr">

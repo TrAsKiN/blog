@@ -8,6 +8,7 @@
         <h1>Connexion</h1>
         <div class="col-lg-8 col-xl-6 mx-auto my-5">
             <form method="post" action="{{ path('login') }}">
+                <input type="hidden" name="_csrf" value="{{ token }}">
                 <div class="mb-3">
                     <label for="inputEmail" class="form-label">E-mail</label>
                     <input name="email" type="email" class="form-control" id="inputEmail" placeholder="nom@exemple.fr" value="{{ form.email ?? '' }}">

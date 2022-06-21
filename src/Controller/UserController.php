@@ -4,6 +4,7 @@ namespace Blog\Controller;
 
 use Blog\Core\Attribute\Route;
 use Blog\Core\Controller;
+use Blog\Core\Csrf;
 use Blog\Core\Mail;
 use Blog\Core\Service\FlashService;
 use Blog\Core\Session;
@@ -13,6 +14,7 @@ use Blog\Form\LoginForm;
 use Blog\Form\RegisterForm;
 use Blog\Form\ResetPasswordForm;
 use Blog\Repository\UserRepository;
+use Exception;
 use InvalidArgumentException;
 use PDOException;
 use Psr\Http\Message\ResponseInterface;
@@ -30,12 +32,14 @@ class UserController extends Controller
      * @throws LoaderError
      * @throws RuntimeError
      * @throws SyntaxError
+     * @throws Exception
      */
     #[Route('/login', name: 'login')]
     public function login(
         ServerRequestInterface $request,
         FlashService $messages,
-        LoginForm $loginForm
+        LoginForm $loginForm,
+        Csrf $csrf
     ): ResponseInterface {
         $session = $request->getAttribute(Session::class);
         if ($loginForm->form->isPost() && $loginForm->form->isValid()) {
@@ -45,8 +49,10 @@ class UserController extends Controller
                 return $this->redirect('home');
             }
         }
+        $token = $csrf->new();
         return $this->render('user/login.html.twig', [
             'form' => $loginForm->form->getData(),
+            'token' => $token,
         ]);
     }
 
@@ -57,12 +63,14 @@ class UserController extends Controller
      * @throws SyntaxError
      * @throws TransportExceptionInterface
      * @throws TypeError
+     * @throws Exception
      */
     #[Route('/forgotten-password', name: 'forgotten')]
     public function forgottenPassword(
         FlashService $messages,
         ForgottenForm $forgottenForm,
-        Mail $mail
+        Mail $mail,
+        Csrf $csrf
     ): ResponseInterface {
         if ($forgottenForm->form->isPost() && $forgottenForm->form->isValid()) {
             if ($user = $forgottenForm->getResult()) {
@@ -73,8 +81,10 @@ class UserController extends Controller
                 'success'
             );
         }
+        $token = $csrf->new();
         return $this->render('user/forgotten.html.twig', [
             'form' => $forgottenForm->form->getData(),
+            'token' => $token,
         ]);
     }
 
@@ -83,12 +93,14 @@ class UserController extends Controller
      * @throws LoaderError
      * @throws RuntimeError
      * @throws SyntaxError
+     * @throws Exception
      */
     #[Route('/reset-password/{token}', name: 'resetPassword')]
     public function resetPassword(
         string $token,
         ResetPasswordForm $resetPasswordForm,
-        FlashService $messages
+        FlashService $messages,
+        Csrf $csrf
     ): ResponseInterface {
         if ($resetPasswordForm->form->isPost() && $resetPasswordForm->form->isValid()) {
             if (!$resetPasswordForm->getResult($token)) {
@@ -98,9 +110,11 @@ class UserController extends Controller
             $messages->addFlash("Votre nouveau mot de passe a bien été enregistré !", 'success');
             return $this->redirect('login');
         }
+        $tokenCsrf = $csrf->new();
         return $this->render('user/reset.html.twig', [
             'token' => $token,
-            'form' => $resetPasswordForm->form->getData()
+            'form' => $resetPasswordForm->form->getData(),
+            'csrf' => $tokenCsrf,
         ]);
     }
 
@@ -111,12 +125,14 @@ class UserController extends Controller
      * @throws SyntaxError
      * @throws TransportExceptionInterface
      * @throws TypeError
+     * @throws Exception
      */
     #[Route('/register', name: 'register')]
     public function register(
         FlashService $messages,
         Mail $mail,
-        RegisterForm $registerForm
+        RegisterForm $registerForm,
+        Csrf $csrf
     ): ResponseInterface {
         if ($registerForm->form->isPost() && $registerForm->form->isValid()) {
             if ($user = $registerForm->getResult()) {
@@ -125,8 +141,10 @@ class UserController extends Controller
                 return $this->redirect('login');
             }
         }
+        $token = $csrf->new();
         return $this->render('user/register.html.twig', [
             'form' => $registerForm->form->getData(),
+            'token' => $token,
         ]);
     }
 

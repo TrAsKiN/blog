@@ -29,6 +29,7 @@
             {% endfor %}
             {% if isAuthenticated() %}
             <form action="{{ path('comment_add', {'slug': post.slug}) }}" method="post" class="mt-5">
+                <input type="hidden" name="_csrf" value="{{ token }}">
                 <div class="my-3">
                     <label for="commentTextarea" class="form-label">Laisser un commentaire</label>
                     <textarea name="content" class="form-control" id="commentTextarea" rows="5" placeholder="Commentaire"></textarea>

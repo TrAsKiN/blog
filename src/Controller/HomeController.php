@@ -4,10 +4,12 @@ namespace Blog\Controller;
 
 use Blog\Core\Attribute\Route;
 use Blog\Core\Controller;
+use Blog\Core\Csrf;
 use Blog\Core\Mail;
 use Blog\Core\Service\FlashService;
 use Blog\Form\ContactForm;
 use Blog\Repository\PostRepository;
+use Exception;
 use InvalidArgumentException;
 use PDOException;
 use Psr\Http\Message\ResponseInterface;
@@ -25,18 +27,23 @@ class HomeController extends Controller
      * @throws LoaderError
      * @throws PDOException
      * @throws InvalidArgumentException
+     * @throws Exception
      */
     #[Route('/', name: 'home')]
-    public function home(PostRepository $postRepository): ResponseInterface
-    {
+    public function home(
+        PostRepository $postRepository,
+        Csrf $csrf
+    ): ResponseInterface {
         $posts = $postRepository->getPaginatedList(1, 1);
-        return $this->render('home/home.html.twig', compact('posts'));
+        $token = $csrf->new();
+        return $this->render('home/home.html.twig', compact('posts', 'token'));
     }
 
     /**
      * @throws InvalidArgumentException
      * @throws TransportExceptionInterface
      * @throws TypeError
+     * @throws Exception
      */
     #[Route('/contact', name: 'contact')]
     public function contact(
