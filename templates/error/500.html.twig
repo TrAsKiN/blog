@@ -1,0 +1,17 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Erreur serveur &middot; {{ parent() }}{% endblock %}
+
+{% block body %}
+
+    <div class="container">
+        <h1>Erreur serveur !</h1>
+        <p class="lead">Le serveur a rencontré une erreur et n'a pas pu traiter votre requête.</p>
+        <pre>
+            {{ exception.message }}
+            <br>
+            {{ exception.traceAsString }}
+        </pre>
+    </div>
+
+{% endblock %}
