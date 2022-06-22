@@ -2,8 +2,9 @@
 
 use Blog\Core\App;
 use DI\ContainerBuilder;
-use Laminas\Diactoros\Response\TextResponse;
+use Laminas\Diactoros\Response\HtmlResponse;
 use Laminas\HttpHandlerRunner\Emitter\SapiEmitter;
+use Twig\Environment;
 
 $rootPath = dirname(__DIR__);
 require_once $rootPath . '/vendor/autoload.php';
@@ -21,8 +22,8 @@ try {
     $response = $app->run();
     (new SapiEmitter())->emit($response);
 } catch (Exception $exception) {
-    (new SapiEmitter())->emit(new TextResponse(
-        $exception->getMessage() . PHP_EOL . PHP_EOL . $exception->getTraceAsString(),
+    (new SapiEmitter())->emit(new HtmlResponse(
+        ($container->get(Environment::class))->render('error/500.html.twig', compact('exception')),
         500
     ));
 }

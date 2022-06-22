@@ -21,22 +21,12 @@ use Twig\Extra\Intl\IntlExtension;
 
 abstract class Controller
 {
-    /**
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
-     * @throws RuntimeException
-     */
     public function __construct(
         protected readonly Environment $twig,
         private readonly Router $router,
         private readonly ContainerInterface $container,
         private readonly UserProvider $provider
     ) {
-        $this->twig->addExtension(new IntlExtension());
-        $extensions = ClassMapGenerator::createMap(__DIR__ . '/TwigExtension');
-        foreach ($extensions as $class => $file) {
-            $this->twig->addExtension($this->container->get($class));
-        }
     }
 
     /**

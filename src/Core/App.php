@@ -29,7 +29,7 @@ class App
         private readonly Container $container,
         private readonly ServerRequestInterface $request
     ) {
-        $this->handler = new RequestHandler(new NotFoundHandler());
+        $this->handler = new RequestHandler($this->container->get(NotFoundHandler::class));
         $this->handler->pipe([
             $this->container->get(RoutingMiddleware::class),
             $this->container->get(SessionMiddleware::class),
