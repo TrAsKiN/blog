@@ -29,6 +29,11 @@ h1, h2, h3, h4, h5, h6 {
   font-family: "Playfair Display", Georgia, "Times New Roman", serif;
 }
 
+option {
+  background-color: $body-bg;
+  color: $body-color;
+}
+
 .blog-caption {
   padding-left: 0 !important;
   margin-left: calc(var(--bs-gutter-x)*.5);

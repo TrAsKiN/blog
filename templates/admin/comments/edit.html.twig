@@ -1,0 +1,24 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Modifier un commentaire &middot; {{ parent() }}{% endblock %}
+
+{% block body %}
+
+    <div class="container">
+        <h1>Modifier un commentaire</h1>
+        <form action="{{ path('admin_comments_edit', {'id': comment.id}) }}" method="post" class="mt-4 col-lg-8 col-xl-6 mx-auto">
+            <input type="hidden" name="_csrf" value="{{ token }}">
+            <select name="valid" class="form-select mb-3" aria-label="Publié">
+                <option value="0"{{ comment.valid == 0 ? ' selected' }}>En attente</option>
+                <option value="1"{{ comment.valid == 1 ? ' selected' }}>Publié</option>
+                <option value="2"{{ comment.valid == 2 ? ' selected' }}>Caché</option>
+            </select>
+            <div class="d-flex justify-content-between">
+                <button type="submit" class="btn btn-secondary">Enregistrer</button>
+                <a href="{{ path('admin_comments_list') }}" class="btn btn-outline-secondary">Retour à la liste</a>
+            </div>
+        </form>
+
+    </div>
+
+{% endblock %}
