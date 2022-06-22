@@ -30,6 +30,23 @@ class CommentRepository extends Database
     /**
      * @throws PDOException
      */
+    public function getPaginatedList(int $page, int $max = 10): bool|array
+    {
+        $offset = $max * ($page - 1);
+        $commentsStatement = $this->pdo->prepare(
+            "SELECT * FROM `comments` ORDER BY `created_at` DESC LIMIT $max OFFSET $offset"
+        );
+        $commentsStatement->execute();
+        $comments = $commentsStatement->fetchAll(PDO::FETCH_CLASS, Comment::class);
+        foreach ($comments as $comment) {
+            $this->setAuthorAndPost($comment);
+        }
+        return $comments;
+    }
+
+    /**
+     * @throws PDOException
+     */
     public function getCommentsToValidate(): bool|array
     {
         $commentsStatement = $this->pdo->prepare(
@@ -48,7 +65,7 @@ class CommentRepository extends Database
     /**
      * @throws PDOException
      */
-    public function updateComment(Comment $comment): bool
+    public function update(Comment $comment): bool
     {
         $statement = $this->pdo->prepare(
             'UPDATE `comments` SET
@@ -66,7 +83,7 @@ class CommentRepository extends Database
     /**
      * @throws PDOException
      */
-    public function addComment(Post $post, User $author, string $content): bool|string
+    public function add(Post $post, User $author, string $content): bool|string
     {
         $statement = $this->pdo->prepare(
             'INSERT INTO `comments` (`author`, `post`, `content`) VALUES (:author, :post, :content)'
@@ -77,6 +94,19 @@ class CommentRepository extends Database
             'content' => $content,
         ]);
         return $this->pdo->lastInsertId();
+    }
+
+    /**
+     * @throws PDOException
+     */
+    public function delete(Comment $comment): bool
+    {
+        $statement = $this->pdo->prepare(
+            'DELETE FROM `comments` WHERE `id` = :id'
+        );
+        return $statement->execute([
+            'id' => $comment->getId(),
+        ]);
     }
 
     /**

@@ -30,7 +30,7 @@ class CommentForm implements FormInterface
         try {
             $post = $this->postRepository->findWithSlug($params);
             $user = $this->provider->getUser();
-            $this->commentRepository->addComment($post, $user, $this->form->getData('content'));
+            $this->commentRepository->add($post, $user, $this->form->getData('content'));
             return $post;
         } catch (Exception $exception) {
             $this->messages->addFlash($exception->getMessage(), 'danger');

@@ -23,7 +23,7 @@
                     <td>{{ comment.author }}</td>
                     <td class="text-end">
                         <a class="link-success p-1" href="{{ path('comment_valid', {'id': comment.id}) }}" title="Valider"><i class="bi bi-check-circle"></i></a>
-                        <a class="link-danger p-1" href="{{ path('comment_invalid', {'id': comment.id}) }}" title="Supprimer"><i class="bi bi-dash-circle"></i></a>
+                        <a class="link-danger p-1" href="{{ path('comment_invalid', {'id': comment.id}) }}" title="Cacher"><i class="bi bi-dash-circle"></i></a>
                     </td>
                 </tr>
                 {% else %}

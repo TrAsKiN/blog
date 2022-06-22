@@ -7,11 +7,8 @@ use Blog\Core\Controller;
 use Blog\Core\Csrf;
 use Blog\Core\Form;
 use Blog\Core\Service\FlashService;
-use Blog\Entity\Post;
 use Blog\Form\PostForm;
 use Blog\Repository\PostRepository;
-use DateTime;
-use DateTimeInterface;
 use Exception;
 use InvalidArgumentException;
 use PDOException;
@@ -20,7 +17,7 @@ use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
 
-class CrudController extends Controller
+class PostsController extends Controller
 {
     /**
      * @throws SyntaxError
@@ -30,14 +27,14 @@ class CrudController extends Controller
      * @throws LoaderError
      * @throws Exception
      */
-    #[Route('/admin/blog/list', name: 'admin_blog_list', roles: ['admin'], restricted: true)]
+    #[Route('/admin/posts/list', name: 'admin_blog_list', roles: ['admin'], restricted: true)]
     public function list(
         PostRepository $repository,
         Csrf $csrf
     ): ResponseInterface {
-        $posts = $repository->getPaginatedList(1);
+        $posts = $repository->getPaginatedList(1, 100);
         $token = $csrf->new();
-        return $this->render('admin/list.html.twig', compact('posts', 'token'));
+        return $this->render('admin/posts/list.html.twig', compact('posts', 'token'));
     }
 
     /**
@@ -48,7 +45,7 @@ class CrudController extends Controller
      * @throws LoaderError
      * @throws Exception
      */
-    #[Route('/admin/blog/edit/{id}', name: 'admin_blog_edit', roles: ['admin'], restricted: true)]
+    #[Route('/admin/posts/edit/{id}', name: 'admin_blog_edit', roles: ['admin'], restricted: true)]
     public function edit(
         int $id,
         PostRepository $repository,
@@ -63,7 +60,7 @@ class CrudController extends Controller
             }
         }
         $token = $csrf->new();
-        return $this->render('admin/edit.html.twig', compact('post', 'token'));
+        return $this->render('admin/posts/edit.html.twig', compact('post', 'token'));
     }
 
     /**
@@ -71,7 +68,7 @@ class CrudController extends Controller
      * @throws PDOException
      * @throws Exception
      */
-    #[Route('/admin/blog/delete/{id}', name: 'admin_blog_delete', roles: ['admin'], restricted: true)]
+    #[Route('/admin/posts/delete/{id}', name: 'admin_blog_delete', roles: ['admin'], restricted: true)]
     public function delete(
         int $id,
         PostRepository $repository,
@@ -97,7 +94,7 @@ class CrudController extends Controller
      * @throws LoaderError
      * @throws Exception
      */
-    #[Route('/admin/blog/new', name: 'admin_blog_new', roles: ['admin'], restricted: true)]
+    #[Route('/admin/posts/new', name: 'admin_blog_new', roles: ['admin'], restricted: true)]
     public function new(
         PostForm $postForm,
         FlashService $messages,
@@ -110,6 +107,6 @@ class CrudController extends Controller
             }
         }
         $token = $csrf->new();
-        return $this->render('admin/new.html.twig', compact('token'));
+        return $this->render('admin/posts/new.html.twig', compact('token'));
     }
 }

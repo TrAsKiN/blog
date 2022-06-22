@@ -58,7 +58,7 @@ class AdminController extends Controller
     ): ResponseInterface {
         $comment = $commentRepository->find($id);
         $comment->setValid(Comment::VALIDATED);
-        if ($commentRepository->updateComment($comment)) {
+        if ($commentRepository->update($comment)) {
             $messages->addFlash("Commentaire validé !", 'success');
         }
         return $this->redirect('admin_comments');
@@ -76,7 +76,7 @@ class AdminController extends Controller
     ): ResponseInterface {
         $comment = $commentRepository->find($id);
         $comment->setValid(Comment::DELETED);
-        if ($commentRepository->updateComment($comment)) {
+        if ($commentRepository->update($comment)) {
             $messages->addFlash("Commentaire supprimé !", 'success');
         }
         return $this->redirect('admin_comments');
