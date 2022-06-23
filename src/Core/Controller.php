@@ -4,7 +4,6 @@ namespace Blog\Core;
 
 use Blog\Core\Authentication\UserProvider;
 use Blog\Entity\User;
-use Composer\Autoload\ClassMapGenerator;
 use InvalidArgumentException;
 use Laminas\Diactoros\Response\HtmlResponse;
 use Laminas\Diactoros\Response\RedirectResponse;
@@ -12,12 +11,10 @@ use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Psr\Http\Message\ResponseInterface;
-use RuntimeException;
 use Twig\Environment;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
-use Twig\Extra\Intl\IntlExtension;
 
 abstract class Controller
 {
