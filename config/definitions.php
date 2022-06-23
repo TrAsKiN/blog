@@ -1,17 +1,25 @@
 <?php
 
+use Composer\Autoload\ClassMapGenerator;
 use Laminas\Diactoros\ServerRequestFactory;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Component\Mailer\Mailer;
 use Symfony\Component\Mailer\Transport;
 use Twig\Environment;
+use Twig\Extra\Intl\IntlExtension;
 use Twig\Loader\FilesystemLoader;
 
 return [
-    Environment::class => function () {
+    Environment::class => function (ContainerInterface $container) {
         $loader = new FilesystemLoader(__DIR__ . '/../templates');
-        return new Environment($loader);
+        $twig = new Environment($loader);
+        $twig->addExtension($container->get(IntlExtension::class));
+        $extensions = ClassMapGenerator::createMap(__DIR__ . '/../src/Core/TwigExtension');
+        foreach ($extensions as $class => $file) {
+            $twig->addExtension($container->get($class));
+        }
+        return $twig;
     },
     Mailer::class => function (ContainerInterface $container) {
         return new Mailer(Transport::fromDsn($container->get('mailer')));
