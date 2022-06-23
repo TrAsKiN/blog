@@ -32,7 +32,7 @@ class PostForm implements FormInterface
                 $post->setTitle($this->form->getData('title'));
                 $post->setLede($this->form->getData('lede'));
                 $post->setContent($this->form->getData('content'));
-                $this->repository->updatePost($post);
+                $this->repository->update($post);
                 return $post;
             } else {
                 $post = new Post();
@@ -41,7 +41,7 @@ class PostForm implements FormInterface
                 $post->setSlug(strtolower(trim(preg_replace('/[^\w-]+/', '-', $this->form->getData('title')))));
                 $post->setLede($this->form->getData('lede'));
                 $post->setContent($this->form->getData('content'));
-                return $this->repository->find($this->repository->addPost($post));
+                return $this->repository->find($this->repository->add($post));
             }
         } catch (Exception $exception) {
             $this->messages->addFlash($exception->getMessage(), 'danger');

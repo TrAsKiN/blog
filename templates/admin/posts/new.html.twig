@@ -7,7 +7,7 @@
     <div class="container">
         <h1>Rédiger un article</h1>
         {% include 'admin/posts/_post.html.twig' with {
-            'url': path('admin_blog_new'),
+            'url': path('admin_posts_new'),
             'token': token,
         } %}
     </div>

@@ -2,13 +2,17 @@
 
 namespace Blog\Controller;
 
+use ArithmeticError;
 use Blog\Core\Attribute\Route;
 use Blog\Core\Controller;
 use Blog\Core\Csrf;
 use Blog\Core\Form;
+use Blog\Core\Paginator;
 use Blog\Core\Service\FlashService;
+use Blog\Entity\Post;
 use Blog\Form\PostForm;
 use Blog\Repository\PostRepository;
+use DivisionByZeroError;
 use Exception;
 use InvalidArgumentException;
 use PDOException;
@@ -20,21 +24,32 @@ use Twig\Error\SyntaxError;
 class PostsController extends Controller
 {
     /**
-     * @throws SyntaxError
      * @throws InvalidArgumentException
-     * @throws RuntimeError
-     * @throws PDOException
      * @throws LoaderError
+     * @throws PDOException
+     * @throws RuntimeError
+     * @throws SyntaxError
+     * @throws ArithmeticError
+     * @throws DivisionByZeroError
      * @throws Exception
      */
-    #[Route('/admin/posts/list', name: 'admin_blog_list', roles: ['admin'], restricted: true)]
+    #[Route('/admin/posts/list/{page}', name: 'admin_posts_list', roles: ['admin'], restricted: true)]
     public function list(
+        int $page,
         PostRepository $repository,
-        Csrf $csrf
+        Csrf $csrf,
+        Paginator $paginator
     ): ResponseInterface {
-        $posts = $repository->getPaginatedList(1, 100);
+        $max = 20;
+        $posts = $repository->getPaginatedList($page, $max);
+        $numberOfPages = $paginator->getNumberOfPages(Post::class, $max);
         $token = $csrf->new();
-        return $this->render('admin/posts/list.html.twig', compact('posts', 'token'));
+        return $this->render('admin/posts/list.html.twig', compact(
+            'posts',
+            'token',
+            'page',
+            'numberOfPages'
+        ));
     }
 
     /**
@@ -45,7 +60,7 @@ class PostsController extends Controller
      * @throws LoaderError
      * @throws Exception
      */
-    #[Route('/admin/posts/edit/{id}', name: 'admin_blog_edit', roles: ['admin'], restricted: true)]
+    #[Route('/admin/posts/edit/{id}', name: 'admin_posts_edit', roles: ['admin'], restricted: true)]
     public function edit(
         int $id,
         PostRepository $repository,
@@ -60,7 +75,10 @@ class PostsController extends Controller
             }
         }
         $token = $csrf->new();
-        return $this->render('admin/posts/edit.html.twig', compact('post', 'token'));
+        return $this->render('admin/posts/edit.html.twig', compact(
+            'post',
+            'token'
+        ));
     }
 
     /**
@@ -68,7 +86,7 @@ class PostsController extends Controller
      * @throws PDOException
      * @throws Exception
      */
-    #[Route('/admin/posts/delete/{id}', name: 'admin_blog_delete', roles: ['admin'], restricted: true)]
+    #[Route('/admin/posts/delete/{id}', name: 'admin_posts_delete', roles: ['admin'], restricted: true)]
     public function delete(
         int $id,
         PostRepository $repository,
@@ -78,13 +96,15 @@ class PostsController extends Controller
         $post = $repository->find($id);
         if ($form->isPost() && $form->isValid()) {
             try {
-                $repository->deletePost($post);
+                $repository->delete($post);
                 $messages->addFlash("Article supprimé !", 'warning');
             } catch (Exception $exception) {
                 $messages->addFlash($exception->getMessage(), 'danger');
             }
         }
-        return $this->redirect('admin_blog_list');
+        return $this->redirect('admin_posts_list', [
+            'page' => 1,
+        ]);
     }
 
     /**
@@ -94,7 +114,7 @@ class PostsController extends Controller
      * @throws LoaderError
      * @throws Exception
      */
-    #[Route('/admin/posts/new', name: 'admin_blog_new', roles: ['admin'], restricted: true)]
+    #[Route('/admin/posts/new', name: 'admin_posts_new', roles: ['admin'], restricted: true)]
     public function new(
         PostForm $postForm,
         FlashService $messages,
@@ -103,10 +123,14 @@ class PostsController extends Controller
         if ($postForm->form->isPost() && $postForm->form->isValid()) {
             if ($postForm->getResult()) {
                 $messages->addFlash("Article ajouté !", 'success');
-                return $this->redirect('admin_blog_list');
+                return $this->redirect('admin_posts_list', [
+                    'page' => 1,
+                ]);
             }
         }
         $token = $csrf->new();
-        return $this->render('admin/posts/new.html.twig', compact('token'));
+        return $this->render('admin/posts/new.html.twig', compact(
+            'token'
+        ));
     }
 }

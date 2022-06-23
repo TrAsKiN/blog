@@ -59,7 +59,7 @@ class PostRepository extends Database
     /**
      * @throws PDOException
      */
-    public function updatePost(Post $post): bool
+    public function update(Post $post): bool
     {
         $statement = $this->pdo->prepare(
             'UPDATE `posts` SET
@@ -80,7 +80,7 @@ class PostRepository extends Database
     /**
      * @throws PDOException
      */
-    public function addPost(Post $post): bool|string
+    public function add(Post $post): bool|string
     {
         $statement = $this->pdo->prepare(
             'INSERT INTO `posts` (`author`, `title`, `slug`, `lede`, `content`)
@@ -99,7 +99,7 @@ class PostRepository extends Database
     /**
      * @throws PDOException
      */
-    public function deletePost(Post $post): bool
+    public function delete(Post $post): bool
     {
         $statement = $this->pdo->prepare(
             'DELETE FROM `posts` WHERE `id` = :id'

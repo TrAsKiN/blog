@@ -6,6 +6,9 @@
 
     <div class="container">
         <h1>Liste des articles</h1>
+        <p class="text-end">
+            <a href="{{ path('admin_posts_new') }}" class="btn btn-sm btn-outline-success">Rédiger un nouvel article</a>
+        </p>
         <table class="table table-dark table-striped table-hover table-borderless">
             <thead>
             <tr>
@@ -22,8 +25,8 @@
                     <td class="text-center">{{ post.comments|length }}</td>
                     <td class="text-center">{{ post.createdAt|date('d/m/Y H:i') }}</td>
                     <td class="p-1 text-end">
-                        <a href="{{ path('admin_blog_edit', {'id': post.id}) }}" class="px-2 py-1 btn btn-link link-secondary" title="Modifier"><i class="bi bi-pen"></i></a>
-                        <form action="{{ path('admin_blog_delete', {'id': post.id}) }}" method="post" class="d-inline-block">
+                        <a href="{{ path('admin_posts_edit', {'id': post.id}) }}" class="px-2 py-1 btn btn-link link-secondary" title="Modifier"><i class="bi bi-pen"></i></a>
+                        <form action="{{ path('admin_posts_delete', {'id': post.id}) }}" method="post" class="d-inline-block">
                             <input type="hidden" name="_csrf" value="{{ token }}">
                             <button type="submit" class="btn btn-link link-secondary px-2 py-1" title="Supprimer"><i class="bi bi-eraser"></i></button>
                         </form>
@@ -36,9 +39,21 @@
                 {% endfor %}
             </tbody>
         </table>
-        <p class="text-end">
-            <a href="{{ path('admin_blog_new') }}" class="btn btn-sm btn-outline-success">Rédiger un nouvel article</a>
-        </p>
+        <nav aria-label="Pagination des articles" class="mt-5">
+            <ul class="pagination pagination-sm justify-content-center">
+                <li class="page-item{{ page == 1 ? ' disabled' }}">
+                    <a class="page-link" href="{{ path('admin_posts_list', {'page': page - 1}) }}">Précédent</a>
+                </li>
+                {% for i in 1..numberOfPages %}
+                    <li class="page-item{{ page == i ? ' active' }}">
+                        <a class="page-link" href="{{ path('admin_posts_list', {'page': i}) }}">{{ i }}</a>
+                    </li>
+                {% endfor %}
+                <li class="page-item{{ page == numberOfPages ? ' disabled' }}">
+                    <a class="page-link" href="{{ path('admin_posts_list', {'page': page + 1}) }}">Suivant</a>
+                </li>
+            </ul>
+        </nav>
     </div>
 
 {% endblock %}
