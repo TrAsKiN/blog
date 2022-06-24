@@ -34,7 +34,7 @@ class RegisterForm implements FormInterface
             $user->setEmail($this->form->getData('email'));
             $user->setPassword($this->encoder->encodePassword($this->form->getData('password')));
             $user->setToken($this->encoder->createToken());
-            if (!$this->repository->addUser($user)) {
+            if (!$this->repository->add($user)) {
                 throw new Exception("Unable to register user");
             }
             return $user;

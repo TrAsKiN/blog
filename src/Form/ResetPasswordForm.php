@@ -35,7 +35,7 @@ class ResetPasswordForm implements FormInterface
             }
             $user->setPassword($this->encoder->encodePassword($this->form->getData('password')));
             $user->setToken(null);
-            if (!$this->repository->updateUser($user)) {
+            if (!$this->repository->update($user)) {
                 throw new Exception("Impossible de mettre à jour les informations !");
             }
             return $user;

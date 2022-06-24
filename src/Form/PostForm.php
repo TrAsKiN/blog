@@ -6,12 +6,15 @@ use Blog\Core\Authentication\UserProvider;
 use Blog\Core\Form;
 use Blog\Core\FormInterface;
 use Blog\Core\Service\FlashService;
+use Blog\Core\SlugTrait;
 use Blog\Entity\Post;
 use Blog\Repository\PostRepository;
 use Exception;
 
 class PostForm implements FormInterface
 {
+    use SlugTrait;
+
     public function __construct(
         public readonly Form $form,
         private readonly FlashService $messages,
@@ -38,7 +41,7 @@ class PostForm implements FormInterface
                 $post = new Post();
                 $post->setAuthor($this->provider->getUser());
                 $post->setTitle($this->form->getData('title'));
-                $post->setSlug(strtolower(trim(preg_replace('/[^\w-]+/', '-', $this->form->getData('title')))));
+                $post->setSlug(self::slugify($this->form->getData('title')));
                 $post->setLede($this->form->getData('lede'));
                 $post->setContent($this->form->getData('content'));
                 return $this->repository->find($this->repository->add($post));

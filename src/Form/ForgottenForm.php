@@ -30,7 +30,7 @@ class ForgottenForm implements FormInterface
             $user = $this->repository->findByEmail($this->form->getData('email'));
             if ($user instanceof User) {
                 $user->setToken($this->encoder->createToken());
-                $this->repository->updateUser($user);
+                $this->repository->update($user);
             }
             $this->messages->addFlash(
                 "Si cette adresse est associé à un compte, vous allez recevoir un mail pour changer votre mot de passe",

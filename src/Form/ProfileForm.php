@@ -44,7 +44,7 @@ class ProfileForm implements FormInterface
             if (!empty($this->form->getData('newPassword'))) {
                 $user->setPassword($this->encoder->encodePassword($this->form->getData('newPassword')));
             }
-            if (!$this->repository->updateUser($user)) {
+            if (!$this->repository->update($user)) {
                 throw new Exception("Unable to update the user!");
             }
             return $user;
