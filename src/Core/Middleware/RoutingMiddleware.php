@@ -4,7 +4,6 @@ namespace Blog\Core\Middleware;
 
 use Blog\Core\Attribute\Route;
 use Blog\Core\Router;
-use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;

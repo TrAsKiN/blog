@@ -1,3 +1,7 @@
+create database if not exists `blog`;
+
+use `blog`;
+
 create table if not exists `users`
 (
     `id`            int auto_increment

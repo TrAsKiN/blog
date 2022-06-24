@@ -1,15 +1,37 @@
-$body-bg: rgba(33,37,41,1);
-$body-color: rgba(248,249,250,1);
-$input-bg: rgba(248,249,250,.1);
-$input-color: rgba(248,249,250,1);
-$input-border-color: rgba(248,249,250,.2);
-$input-focus-border-color: rgba(248,249,250,.25);
-$list-group-bg: rgba(248,249,250,.1);
-$list-group-hover-bg: rgba(248,249,250,.15);
-$list-group-action-active-bg: rgba(248,249,250,.2);
-$list-group-color: rgba(248,249,250,1);
-$list-group-action-hover-color: rgba(248,249,250,1);
-$list-group-border-color: rgba(108,117,125,.5);
+$light-color: rgb(248,249,250);
+$dark-color: rgb(33,37,41);
+$secondary-color: rgb(108,117,125);
+
+$body-bg: rgba($dark-color,1);
+$body-color: rgba($light-color,1);
+$link-color: rgba($secondary-color,1);
+
+$input-bg: rgba($light-color,.1);
+$input-color: $body-color;
+$input-border-color: rgba($light-color,.2);
+$input-focus-border-color: rgba($light-color,.25);
+
+$list-group-bg: $input-bg;
+$list-group-hover-bg: rgba($light-color,.15);
+$list-group-action-active-bg: $input-border-color;
+$list-group-color: $body-color;
+$list-group-action-hover-color: $body-color;
+$list-group-border-color: rgba($secondary-color,.5);
+
+$pagination-color: $body-color;
+$pagination-bg: $input-bg;
+$pagination-border-color: $list-group-border-color;
+$pagination-focus-color: $pagination-color;
+$pagination-focus-bg: rgba($light-color,.2);
+$pagination-hover-color: $pagination-color;
+$pagination-hover-bg: $list-group-hover-bg;
+$pagination-hover-border-color: $pagination-border-color;
+$pagination-active-color: $pagination-color;
+$pagination-active-bg: $pagination-focus-bg;
+$pagination-active-border-color: $pagination-border-color;
+$pagination-disabled-color: $link-color;
+$pagination-disabled-bg: $pagination-bg;
+$pagination-disabled-border-color: $pagination-border-color;
 
 .text-justify {
   text-align: justify;

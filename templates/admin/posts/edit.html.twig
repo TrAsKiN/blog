@@ -7,7 +7,7 @@
     <div class="container">
         <h1>Modifier l'article "{{ post.title }}"</h1>
         {% include 'admin/posts/_post.html.twig' with {
-            'url': path('admin_blog_edit', {'id': post.id}),
+            'url': path('admin_posts_edit', {'id': post.id}),
             'post': post,
             'token': token
         } %}
