@@ -59,7 +59,7 @@ class UserRepository extends Database
     /**
      * @throws PDOException
      */
-    public function updateUser(User $user): bool
+    public function update(User $user): bool
     {
         $statement = $this->pdo->prepare(
             'UPDATE `users` SET
@@ -85,7 +85,7 @@ class UserRepository extends Database
     /**
      * @throws PDOException
      */
-    public function addUser(User $user): bool|string
+    public function add(User $user): bool|string
     {
         $statement = $this->pdo->prepare(
             'INSERT INTO `users` (`username`, `email`, `password`, `roles`, `active`, `token`)

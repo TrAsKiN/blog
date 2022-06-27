@@ -165,7 +165,7 @@ class UserController extends Controller
         }
         $user->setActive(true);
         $user->setToken(null);
-        if (!$repository->updateUser($user)) {
+        if (!$repository->update($user)) {
             $messages->addFlash("Unable to update user", 'danger');
         }
         $messages->addFlash("Votre compte est désormais actif !", 'success');

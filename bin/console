@@ -1,0 +1,39 @@
+<?php
+
+use Blog\Fixtures\PostsFixtures;
+use Blog\Fixtures\UsersFixtures;
+use DI\ContainerBuilder;
+
+$rootPath = dirname(__DIR__);
+require_once $rootPath . '/vendor/autoload.php';
+
+try {
+    $builder = new ContainerBuilder();
+    if (!file_exists($rootPath . '/config.php')) {
+        throw new Exception("The configuration file does not exist!");
+    }
+    $builder->addDefinitions($rootPath . '/config.php');
+    $builder->addDefinitions($rootPath . '/config/definitions.php');
+    $container = $builder->build();
+
+    if (isset($argv[1]) && preg_match('#^fixtures:load#', $argv[1])) {
+        try {
+            $usersFixtures = $container->get(UsersFixtures::class);
+            if (!$usersFixtures->load()) {
+                return printf("Unable to load fixtures!" . PHP_EOL);
+            }
+            printf("The users fixtures have been loaded into the database!" . PHP_EOL);
+            $postsFixtures = $container->get(PostsFixtures::class);
+            if (!$postsFixtures->load()) {
+                return printf("Unable to load posts fixtures!" . PHP_EOL);
+            }
+            printf("The posts fixtures have been loaded into the database!" . PHP_EOL);
+        } catch (Exception $e) {
+            return printf($e->getMessage());
+        }
+        return printf("All fixtures have been loaded!" . PHP_EOL);
+    }
+    printf("This command does not exist!" . PHP_EOL);
+} catch (Exception $e) {
+    printf($e->getMessage());
+}

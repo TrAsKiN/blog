@@ -9,13 +9,8 @@ use DivisionByZeroError;
 use Exception;
 use PDO;
 
-class Paginator
+class Paginator extends Database
 {
-    public function __construct(
-        private readonly PDO $pdo
-    ) {
-    }
-
     /**
      * @throws DivisionByZeroError
      * @throws ArithmeticError

@@ -32,6 +32,12 @@ If you need to modify configuration items such as database access or mail gatewa
 
 If this file has not been created, you can use the `config.php.dist` template by duplicating it and renaming it `config.php`.
 
+### Fake default dataset
+
+You can load fake datasets (users and blog posts) by running the command:
+
+ * `php bin/console fixtures:load`
+
 ### Alternative installation with Docker
 
  1. `docker run -it --rm -v ${PWD}:/app composer install`
@@ -46,3 +52,6 @@ If this file has not been created, you can use the `config.php.dist` template by
  4. `docker-compose up -d --build`
     * Start the containers
     * Access the blog at: http://localhost
+ 
+ 5. `docker-compose exec app php bin/console fixtures:load`
+    * Add fake default datasets
