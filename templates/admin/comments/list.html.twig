@@ -30,7 +30,7 @@
                     <td class="text-center">{{ comment.createdAt|date('d/m/Y H:i') }}</td>
                     <td>{{ comment.author }}</td>
                     <td>{{ comment.post.title }}</td>
-                    <td class="">{{ comment.content|nl2br }}</td>
+                    <td>{{ comment.content|markdown_to_html }}</td>
                     <td class="p-1 text-end">
                         <a href="{{ path('admin_comments_edit', {'id': comment.id}) }}" class="px-2 py-1 btn btn-link link-secondary" title="Modifier"><i class="bi bi-pen"></i></a>
                         <form action="{{ path('admin_comments_delete', {'id': comment.id}) }}" method="post" class="d-inline-block">

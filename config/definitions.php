@@ -8,14 +8,26 @@ use Symfony\Component\Mailer\Mailer;
 use Symfony\Component\Mailer\Transport;
 use Twig\Environment;
 use Twig\Extra\Intl\IntlExtension;
+use Twig\Extra\Markdown\DefaultMarkdown;
+use Twig\Extra\Markdown\MarkdownExtension;
+use Twig\Extra\Markdown\MarkdownRuntime;
 use Twig\Loader\FilesystemLoader;
+use Twig\RuntimeLoader\RuntimeLoaderInterface;
 
 return [
     Environment::class => function (ContainerInterface $container) {
         $loader = new FilesystemLoader(__DIR__ . '/../templates');
         $twig = new Environment($loader);
         $twig->addExtension($container->get(IntlExtension::class));
-        $extensions = ClassMapGenerator::createMap(__DIR__ . '/../src/Core/TwigExtension');
+        $twig->addExtension($container->get(MarkdownExtension::class));
+        $twig->addRuntimeLoader(new class implements RuntimeLoaderInterface {
+            public function load($class) {
+                if (MarkdownRuntime::class === $class) {
+                    return new MarkdownRuntime(new DefaultMarkdown());
+                }
+            }
+        });
+        $extensions = ClassMapGenerator::createMap(__DIR__ . '/../framework/TwigExtension');
         foreach ($extensions as $class => $file) {
             $twig->addExtension($container->get($class));
         }

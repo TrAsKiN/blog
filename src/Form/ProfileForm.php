@@ -2,14 +2,14 @@
 
 namespace Blog\Form;
 
-use Blog\Core\Authentication\PasswordEncoder;
-use Blog\Core\Authentication\UserProvider;
-use Blog\Core\Form;
-use Blog\Core\FormInterface;
-use Blog\Core\Service\FlashService;
 use Blog\Entity\User;
 use Blog\Repository\UserRepository;
 use Exception;
+use Framework\Authentication\PasswordEncoder;
+use Framework\Authentication\UserProvider;
+use Framework\Form;
+use Framework\FormInterface;
+use Framework\Service\FlashService;
 
 class ProfileForm implements FormInterface
 {

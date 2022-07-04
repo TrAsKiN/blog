@@ -1,7 +1,7 @@
 <?php
 
-use Blog\Core\App;
 use DI\ContainerBuilder;
+use Framework\App;
 use Laminas\Diactoros\Response\HtmlResponse;
 use Laminas\HttpHandlerRunner\Emitter\SapiEmitter;
 use Twig\Environment;

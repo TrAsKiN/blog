@@ -19,7 +19,7 @@
                 {% for comment in comments %}
                 <tr>
                     <td>{{ comment.post.title }}</td>
-                    <td>{{ comment.content }}</td>
+                    <td>{{ comment.content|markdown_to_html }}</td>
                     <td>{{ comment.author }}</td>
                     <td class="text-end">
                         <a class="link-success p-1" href="{{ path('comment_valid', {'id': comment.id}) }}" title="Valider"><i class="bi bi-check-circle"></i></a>

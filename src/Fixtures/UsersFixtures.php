@@ -2,11 +2,11 @@
 
 namespace Blog\Fixtures;
 
-use Blog\Core\Authentication\PasswordEncoder;
-use Blog\Core\Fixtures;
 use Blog\Entity\User;
 use Blog\Repository\UserRepository;
 use Exception;
+use Framework\Authentication\PasswordEncoder;
+use Framework\Fixtures;
 
 class UsersFixtures extends Fixtures
 {
