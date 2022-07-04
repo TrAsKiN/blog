@@ -8,7 +8,7 @@
         <small class="fst-italic">{{ post.comments|length }} commentaire{{ post.comments|length > 1 ? 's' }}</small>
     </p>
     <div class="text-justify">
-        <p class="lead">{{ post.lede|markdown_to_html }}</p>
+        <p class="lead">{{ post.lede|nl2br }}</p>
         <p>{{ post.content|markdown_to_html }}</p>
     </div>
 </article>
