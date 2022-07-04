@@ -2,8 +2,8 @@
 
 namespace Blog\Repository;
 
-use Blog\Core\Database;
 use Blog\Entity\User;
+use Framework\Database;
 use PDOException;
 
 class UserRepository extends Database

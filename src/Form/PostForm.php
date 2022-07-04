@@ -2,14 +2,14 @@
 
 namespace Blog\Form;
 
-use Blog\Core\Authentication\UserProvider;
-use Blog\Core\Form;
-use Blog\Core\FormInterface;
-use Blog\Core\Service\FlashService;
-use Blog\Core\SlugTrait;
 use Blog\Entity\Post;
 use Blog\Repository\PostRepository;
 use Exception;
+use Framework\Authentication\UserProvider;
+use Framework\Form;
+use Framework\FormInterface;
+use Framework\Service\FlashService;
+use Framework\SlugTrait;
 
 class PostForm implements FormInterface
 {

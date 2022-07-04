@@ -2,12 +2,12 @@
 
 namespace Blog\Controller;
 
-use Blog\Core\Attribute\Route;
-use Blog\Core\Controller;
-use Blog\Core\Csrf;
-use Blog\Core\Service\FlashService;
 use Blog\Form\ProfileForm;
 use Exception;
+use Framework\Attribute\Route;
+use Framework\Controller;
+use Framework\Csrf;
+use Framework\Service\FlashService;
 use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
 use Twig\Error\LoaderError;

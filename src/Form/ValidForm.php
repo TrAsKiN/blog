@@ -2,12 +2,12 @@
 
 namespace Blog\Form;
 
-use Blog\Core\Form;
-use Blog\Core\FormInterface;
-use Blog\Core\Service\FlashService;
 use Blog\Entity\Comment;
 use Blog\Repository\CommentRepository;
 use Exception;
+use Framework\Form;
+use Framework\FormInterface;
+use Framework\Service\FlashService;
 
 class ValidForm implements FormInterface
 {

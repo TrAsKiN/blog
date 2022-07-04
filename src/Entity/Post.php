@@ -2,9 +2,9 @@
 
 namespace Blog\Entity;
 
-use Blog\Core\Entity;
 use DateTime;
 use Exception;
+use Framework\Entity;
 
 class Post extends Entity
 {

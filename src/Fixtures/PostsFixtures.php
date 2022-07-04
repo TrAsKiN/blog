@@ -2,11 +2,11 @@
 
 namespace Blog\Fixtures;
 
-use Blog\Core\Fixtures;
 use Blog\Entity\Post;
 use Blog\Repository\PostRepository;
 use Blog\Repository\UserRepository;
 use Exception;
+use Framework\Fixtures;
 
 class PostsFixtures extends Fixtures
 {

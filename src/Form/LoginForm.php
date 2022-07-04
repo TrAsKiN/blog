@@ -2,12 +2,12 @@
 
 namespace Blog\Form;
 
-use Blog\Core\Authentication\UserProvider;
-use Blog\Core\Form;
-use Blog\Core\FormInterface;
-use Blog\Core\Service\FlashService;
 use Blog\Entity\User;
 use Exception;
+use Framework\Authentication\UserProvider;
+use Framework\Form;
+use Framework\FormInterface;
+use Framework\Service\FlashService;
 
 class LoginForm implements FormInterface
 {

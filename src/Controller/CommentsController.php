@@ -3,17 +3,17 @@
 namespace Blog\Controller;
 
 use ArithmeticError;
-use Blog\Core\Attribute\Route;
-use Blog\Core\Controller;
-use Blog\Core\Csrf;
-use Blog\Core\Form;
-use Blog\Core\Paginator;
-use Blog\Core\Service\FlashService;
 use Blog\Entity\Comment;
 use Blog\Form\ValidForm;
 use Blog\Repository\CommentRepository;
 use DivisionByZeroError;
 use Exception;
+use Framework\Attribute\Route;
+use Framework\Controller;
+use Framework\Csrf;
+use Framework\Form;
+use Framework\Paginator;
+use Framework\Service\FlashService;
 use InvalidArgumentException;
 use PDOException;
 use Psr\Http\Message\ResponseInterface;

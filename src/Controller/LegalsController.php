@@ -2,8 +2,8 @@
 
 namespace Blog\Controller;
 
-use Blog\Core\Attribute\Route;
-use Blog\Core\Controller;
+use Framework\Attribute\Route;
+use Framework\Controller;
 use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
 use Twig\Error\LoaderError;

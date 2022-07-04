@@ -2,7 +2,7 @@
 
 namespace Blog\Entity;
 
-use Blog\Core\Entity;
+use Framework\Entity;
 
 class User extends Entity
 {

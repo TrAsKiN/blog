@@ -2,10 +2,10 @@
 
 namespace Blog\Repository;
 
-use Blog\Core\Database;
 use Blog\Entity\Comment;
 use Blog\Entity\Post;
 use Blog\Entity\User;
+use Framework\Database;
 use PDO;
 use PDOException;
 

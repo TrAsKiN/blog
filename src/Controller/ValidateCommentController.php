@@ -2,11 +2,11 @@
 
 namespace Blog\Controller;
 
-use Blog\Core\Attribute\Route;
-use Blog\Core\Controller;
-use Blog\Core\Service\FlashService;
 use Blog\Entity\Comment;
 use Blog\Repository\CommentRepository;
+use Framework\Attribute\Route;
+use Framework\Controller;
+use Framework\Service\FlashService;
 use InvalidArgumentException;
 use PDOException;
 use Psr\Http\Message\ResponseInterface;
