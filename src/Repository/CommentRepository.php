@@ -14,7 +14,7 @@ class CommentRepository extends Database
     /**
      * @throws PDOException
      */
-    public function find(int $id)
+    public function find(int $id): mixed
     {
         $commentStatement = $this->pdo->prepare(
             'SELECT * FROM `comments` WHERE `id` = :id'

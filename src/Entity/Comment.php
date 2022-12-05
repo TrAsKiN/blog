@@ -47,7 +47,7 @@ class Comment extends Entity
     /**
      * @throws Exception
      */
-    public function setCreatedAt($createdAt): void
+    public function setCreatedAt(mixed $createdAt): void
     {
         $this->createdAt = new DateTime($createdAt);
     }

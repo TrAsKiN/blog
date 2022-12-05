@@ -61,7 +61,7 @@ class Post extends Entity
     /**
      * @throws Exception
      */
-    public function setCreatedAt($createdAt): void
+    public function setCreatedAt(mixed $createdAt): void
     {
         $this->createdAt = new DateTime($createdAt);
     }
@@ -74,7 +74,7 @@ class Post extends Entity
     /**
      * @throws Exception
      */
-    public function setUpdatedAt($updatedAt): void
+    public function setUpdatedAt(mixed $updatedAt): void
     {
         $this->updatedAt = new DateTime($updatedAt);
     }
